@@ -1,0 +1,30 @@
+name: Gemini Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize] # PR이 처음 열리거나, 새로운 커밋이 푸시될 때 실행
+
+permissions:
+  contents: read
+  pull-requests: write # 제미나이가 PR에 댓글을 달 수 있도록 권한 부여
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Gemini Code Reviewer
+        # GitHub 마켓플레이스에 등록된 신뢰할 수 있는 Gemini 리뷰어 액션을 활용합니다.
+        uses: google-gemini/gemini-github-code-review-action@v1
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          # 사용할 제미나이 모델을 지정합니다. (현재 가성비와 성능이 좋은 flash 모델 추천)
+          model: 'gemini-3.5-flash'
+          # 제미나이에게 내릴 페르소나 및 리뷰 지침 (원하는 대로 한글 수정 가능)
+          prompt: |
+            너는 시니어 프론트엔드 개발자이자 코드 리뷰어 고수야. 
+            제공된 Pull Request의 코드 변경점을 보고 리팩토링 제안, 잠재적 버그, 
+            성능 개선 포인트, 혹은 가독성을 높일 수 있는 의견을 한국어로 부드럽고 친절하게 리뷰 댓글로 달아줘.
+            잘 작성된 코드에 대해서는 칭찬도 잊지 마!
