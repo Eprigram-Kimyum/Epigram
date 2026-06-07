@@ -6,22 +6,23 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, errorMessage, ...props }, ref) => {
+  ({ label, errorMessage, className, id, ...props }, ref) => {
     const uniqueId = useId();
+    const inputId = id || uniqueId;
 
     return (
       <div
         className={`flex flex-col gap-1.5 w-full max-w-sm ${className || ''}`}
       >
-        <label htmlFor={uniqueId} className="text-sm font-medium text-gray-700">
+        <label htmlFor={inputId} className="text-sm font-medium text-gray-700">
           {label}
         </label>
 
         <input
           ref={ref}
-          id={uniqueId}
+          id={inputId}
           className={`w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 transition-all
-            ${errorMessage ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-blue-500'}`}
+            ${errorMessage ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-blue-300'}`}
           {...props}
         />
 
