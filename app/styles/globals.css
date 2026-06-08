@@ -1,26 +1,61 @@
-@import "tailwindcss";
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+@import url('//cdn.jsdelivr.net/font-iropke-batang/1.2/font-iropke-batang.css');
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --font-main:
+    'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-sub:
+    'Iropke Batang OTF', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕',
+    Helvetica, Arial, sans-serif;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-black-100: #f9f9f9;
+  --color-black-200: #6b6b6b;
+  --color-black-300: #3e3e3e;
+  --color-black-400: #525252;
+  --color-black-500: #454545;
+  --color-black-600: #373737;
+  --color-black-700: #2b2b2b;
+  --color-black-800: #1f1f1f;
+  --color-black-900: #121212;
+  --color-black-950: #050505;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+  --color-white: #ffffff;
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-gray-100: #dedede;
+  --color-gray-200: #c4c4c4;
+  --color-gray-300: #ababab;
+  --color-gray-400: #919191;
+
+  --color-blue-200: #eceff4;
+  --color-blue-300: #cbd3e1;
+  --color-blue-400: #abb8ce;
+  --color-blue-500: #8b9dbc;
+  --color-blue-600: #6a82a9;
+  --color-blue-700: #52698e;
+  --color-blue-800: #40516e;
+  --color-blue-900: #2d394e;
+  --color-blue-950: #1a212d;
+
+  --color-background: #f5f7fa;
+
+  --color-state: #ff6577;
+
+  --color-line-white: #f2f2f2;
+  --color-line-blue: #cfdbea;
+
+  --color-illustration-yellow: #fbc85b;
+  --color-illustration-sub-yellow: #e8aa26;
+  --color-illustration-green: #48bb98;
+  --color-illustration-purple: #8e80e3;
+  --color-illustration-blue: #5195ee;
+  --color-illustration-sub-blue1: #3e3e3e;
+  --color-illustration-sub-blue2: #3e414d;
+  --color-illustration-sub-blue3: #494d59;
+  --color-illustration-red: #e46e80;
+  --color-illustration-brown: #9a695e;
+  --color-illustration-sub-gray1: #c7d1e0;
+  --color-illustration-sub-gray2: #e3e9f1;
+  --color-illustration-sub-gray3: #eff3f8;
 }
