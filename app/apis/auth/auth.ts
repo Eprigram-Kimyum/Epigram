@@ -5,7 +5,7 @@ export const registerUser = async (
   signUpData: SignUpRequest,
 ): Promise<SignUpResponse> => {
   return instance.post(
-    '/auth/signup',
+    '/auth/signUp',
     signUpData,
   ) as unknown as Promise<SignUpResponse>;
 };

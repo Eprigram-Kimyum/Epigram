@@ -1,120 +1,134 @@
+'use client';
+
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { registerUser } from '../apis/auth/auth';
+import { useRouter } from 'next/navigation';
 import { SignUpRequest } from '../apis/auth/type';
+import { registerUser } from '../apis/auth/auth';
+import { Input } from '../components/common/input';
+import axios from 'axios';
+
+interface SignUpFormInput extends SignUpRequest {
+  passwordConfirm: string;
+}
 
 export default function SignUpPage() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     getValues,
-    formState: { errors, isSubmitting },
-  } = useForm<SignUpRequest>({
-    mode: 'onTouched',
+    setError,
+    formState: { errors },
+  } = useForm<SignUpFormInput>({
+    mode: 'onBlur',
   });
 
-  const onSubmit: SubmitHandler<SignUpRequest> = async (data) => {
+  const onSubmit: SubmitHandler<SignUpFormInput> = async (data) => {
+    const payload: SignUpRequest = {
+      email: data.email,
+      nickname: data.nickname,
+      password: data.password,
+      passwordConfirmation: data.passwordConfirm,
+    };
+
     try {
-      const response = await registerUser(data);
-      alert(`${response.user.nickname}님, 가입을 환영합니다!`);
+      await registerUser(payload);
+
+      router.push('/');
     } catch (error) {
-      console.error(error);
-      alert('회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      if (axios.isAxiosError(error) && error.response) {
+        const serverMessage = error.response.data?.message || '';
+
+        if (serverMessage.includes('이메일')) {
+          setError('email', { type: 'server', message: serverMessage });
+        } else if (serverMessage.includes('닉네임')) {
+          setError('nickname', { type: 'server', message: serverMessage });
+        } else {
+          alert(serverMessage || '회원가입 중 오류가 발생했습니다.');
+        }
+      }
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label htmlFor="email">이메일</label>
-        <input
+    <main>
+      <h2>Epigram</h2>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* 이메일 입력창 */}
+        <Input
           id="email"
+          label="이메일"
           type="email"
-          aria-invalid={errors.email ? 'true' : 'false'}
-          aria-describedby={errors.email ? 'email-error' : undefined}
+          placeholder="이메일"
+          error={errors.email?.message}
           {...register('email', {
             required: '이메일은 필수 입력 항목입니다.',
             pattern: {
-              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
               message: '올바른 이메일 형식이 아닙니다.',
             },
           })}
         />
-        {errors.email && (
-          <p id="email-error" style={{ color: 'red' }}>
-            {errors.email.message}
-          </p>
-        )}
-      </div>
 
-      <div>
-        <label htmlFor="password">비밀번호</label>
-        <input
+        {/* 비밀번호 입력창 */}
+        <Input
           id="password"
+          label="비밀번호"
           type="password"
-          aria-invalid={errors.password ? 'true' : 'false'}
-          aria-describedby={errors.password ? 'password-error' : undefined}
+          placeholder="비밀번호"
+          error={errors.password?.message}
           {...register('password', {
             required: '비밀번호는 필수 입력 항목입니다.',
-            minLength: {
-              value: 8,
-              message: '비밀번호는 최소 8자 이상이어야 합니다.',
+            pattern: {
+              value:
+                /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\]:;<>|./?~-]).{8,}$/,
+              message:
+                '비밀번호는 영어, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.',
             },
+            deps: ['passwordConfirm'],
           })}
         />
-        {errors.password && (
-          <p id="password-error" style={{ color: 'red' }}>
-            {errors.password.message}
-          </p>
-        )}
-      </div>
 
-      <div>
-        <label htmlFor="passwordConfirmation">비밀번호 확인</label>
-        <input
-          id="passwordConfirmation"
+        {/* 비밀번호 확인 입력란 */}
+        <Input
+          id="passwordConfirm"
           type="password"
-          aria-invalid={errors.passwordConfirmation ? 'true' : 'false'}
-          aria-describedby={
-            errors.passwordConfirmation
-              ? 'passwordConfirmation-error'
-              : undefined
-          }
-          {...register('passwordConfirmation', {
+          placeholder="비밀번호 확인"
+          error={errors.passwordConfirm?.message}
+          {...register('passwordConfirm', {
             required: '비밀번호 확인은 필수 입력 항목입니다.',
             validate: (value) =>
               value === getValues('password') ||
               '비밀번호가 일치하지 않습니다.',
           })}
         />
-        {errors.passwordConfirmation && (
-          <p id="passwordConfirmation-error" style={{ color: 'red' }}>
-            {errors.passwordConfirmation.message}
-          </p>
-        )}
-      </div>
 
-      <div>
-        <label htmlFor="nickname">닉네임</label>
-        <input
+        {/* 닉네임 입력창 */}
+        <Input
           id="nickname"
+          label="닉네임"
           type="text"
-          aria-invalid={errors.nickname ? 'true' : 'false'}
-          aria-describedby={errors.nickname ? 'nickname-error' : undefined}
+          placeholder="닉네임"
+          error={errors.nickname?.message}
           {...register('nickname', {
             required: '닉네임은 필수 입력 항목입니다.',
+            maxLength: {
+              value: 20,
+              message: '닉네임은 최대 20자까지 가능합니다.',
+            },
           })}
         />
-        {errors.nickname && (
-          <p id="nickname-error" style={{ color: 'red' }}>
-            {errors.nickname.message}
-          </p>
-        )}
-      </div>
 
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? '가입 중...' : '회원가입'}
-      </button>
-    </form>
+        <button
+          type="submit"
+          style={{ padding: '10px 20px', marginTop: '10px' }}
+        >
+          가입하기
+        </button>
+      </form>
+    </main>
   );
 }
