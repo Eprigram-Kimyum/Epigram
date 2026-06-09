@@ -1,13 +1,13 @@
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { registerUser } from '../api/auth/auth';
-import { SignUpRequest } from '../api/auth/type';
+import { registerUser } from '../apis/auth/auth';
+import { SignUpRequest } from '../apis/auth/type';
 
 export default function SignUpPage() {
-  // useForm 훅에서 필요한 도구들을 꺼내옵니다.
-  const {
+  const { 
     register,         // input 요소를 등록하는 함수
     handleSubmit,     // 유효성 검사 통과 시 전송을 처리하는 함수
+    watch,
     formState: { errors, isSubmitting }, // 에러 상태와 제출 중 상태를 가져옵니다.
   } = useForm<SignUpRequest>();
 
@@ -56,6 +56,18 @@ export default function SignUpPage() {
       </div>
 
       <div>
+        <label>비밀번호 확인</label>
+        <input
+          type="password"
+          {...register('passwordConfirmation', {
+            required: '비밀번호 확인은 필수 입력 항목입니다.',
+            validate: (value) =>
+              value === watch('password') || '비밀번호가 일치하지 않습니다.',
+          })}
+        />
+        {errors.passwordConfirmation && <p style={{ color: 'red' }}>{errors.passwordConfirmation.message}</p>}
+      </div>
+        
         <label>닉네임</label>
         <input
           type="text"

@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { getAccessToken, removeAccessToken } from '../utils/authTokenStorage';
 
 const ERROR_MESSAGES = {
   network: '네트워크 연결이 원활하지 않습니다.',
@@ -8,10 +9,7 @@ const ERROR_MESSAGES = {
 } as const;
 
 const getValidToken = (): string | null => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('accessToken');
-  }
-  return null;
+  return getAccessToken();
 };
 
 const config: AxiosRequestConfig = {
@@ -57,8 +55,8 @@ instance.interceptors.response.use(
     switch (status) {
       case 401:
         alert('인증이 만료되었습니다. 다시 로그인해주세요.');
+        removeAccessToken();
         if (typeof window !== 'undefined') {
-          localStorage.removeItem('accessToken');
           window.location.href = '/login';
         }
         break;
