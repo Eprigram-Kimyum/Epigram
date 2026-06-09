@@ -11,7 +11,6 @@ export function Input({
   type = 'text',
   ref,
   id,
-  className,
   ...props
 }: InputProps) {
   const uniqueId = useId();
@@ -19,7 +18,7 @@ export function Input({
   const errorId = `${inputId}-error`;
 
   return (
-    <div className={`flex flex-col gap-1.5 w-full ${className || ''}`}>
+    <div className="flex flex-col gap-1.5 w-full">
       <label htmlFor={inputId} className="text-sm font-semibold text-black-700">
         {label}
       </label>

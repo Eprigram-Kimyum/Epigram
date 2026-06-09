@@ -4,30 +4,34 @@ import { registerUser } from '../apis/auth/auth';
 import { SignUpRequest } from '../apis/auth/type';
 
 export default function SignUpPage() {
-  const { 
-    register,         // input 요소를 등록하는 함수
-    handleSubmit,     // 유효성 검사 통과 시 전송을 처리하는 함수
-    watch,
-    formState: { errors, isSubmitting }, // 에러 상태와 제출 중 상태를 가져옵니다.
-  } = useForm<SignUpRequest>();
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors, isSubmitting },
+  } = useForm<SignUpRequest>({
+    mode: 'onTouched',
+  });
 
-  // 유효성 검사가 모두 통과했을 때 실행되는 실제 제출 함수입니다.
   const onSubmit: SubmitHandler<SignUpRequest> = async (data) => {
     try {
       const response = await registerUser(data);
-      alert(`${response.nickname}님, 가입을 환영합니다!`);
+      alert(`${response.user.nickname}님, 가입을 환영합니다!`);
     } catch (error) {
       console.error(error);
+      alert('회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.');
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <label>이메일</label>
-        {/* register 함수를 스프레드 연산자(...)로 input에 주입합니다. */}
+        <label htmlFor="email">이메일</label>
         <input
+          id="email"
           type="email"
+          aria-invalid={errors.email ? 'true' : 'false'}
+          aria-describedby={errors.email ? 'email-error' : undefined}
           {...register('email', {
             required: '이메일은 필수 입력 항목입니다.',
             pattern: {
@@ -36,14 +40,20 @@ export default function SignUpPage() {
             },
           })}
         />
-        {/* 유효성 검사에 걸리면 에러 메시지를 보여줍니다. */}
-        {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
+        {errors.email && (
+          <p id="email-error" style={{ color: 'red' }}>
+            {errors.email.message}
+          </p>
+        )}
       </div>
 
       <div>
-        <label>비밀번호</label>
+        <label htmlFor="password">비밀번호</label>
         <input
+          id="password"
           type="password"
+          aria-invalid={errors.password ? 'true' : 'false'}
+          aria-describedby={errors.password ? 'password-error' : undefined}
           {...register('password', {
             required: '비밀번호는 필수 입력 항목입니다.',
             minLength: {
@@ -52,31 +62,56 @@ export default function SignUpPage() {
             },
           })}
         />
-        {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
+        {errors.password && (
+          <p id="password-error" style={{ color: 'red' }}>
+            {errors.password.message}
+          </p>
+        )}
       </div>
 
       <div>
-        <label>비밀번호 확인</label>
+        <label htmlFor="passwordConfirmation">비밀번호 확인</label>
         <input
+          id="passwordConfirmation"
           type="password"
+          aria-invalid={errors.passwordConfirmation ? 'true' : 'false'}
+          aria-describedby={
+            errors.passwordConfirmation
+              ? 'passwordConfirmation-error'
+              : undefined
+          }
           {...register('passwordConfirmation', {
             required: '비밀번호 확인은 필수 입력 항목입니다.',
             validate: (value) =>
-              value === watch('password') || '비밀번호가 일치하지 않습니다.',
+              value === getValues('password') ||
+              '비밀번호가 일치하지 않습니다.',
           })}
         />
-        {errors.passwordConfirmation && <p style={{ color: 'red' }}>{errors.passwordConfirmation.message}</p>}
-      </div>
-        
-        <label>닉네임</label>
-        <input
-          type="text"
-          {...register('nickname', { required: '닉네임은 필수 입력 항목입니다.' })}
-        />
-        {errors.nickname && <p style={{ color: 'red' }}>{errors.nickname.message}</p>}
+        {errors.passwordConfirmation && (
+          <p id="passwordConfirmation-error" style={{ color: 'red' }}>
+            {errors.passwordConfirmation.message}
+          </p>
+        )}
       </div>
 
-      {/* isSubmitting을 활용해 중복 클릭을 방지합니다. */}
+      <div>
+        <label htmlFor="nickname">닉네임</label>
+        <input
+          id="nickname"
+          type="text"
+          aria-invalid={errors.nickname ? 'true' : 'false'}
+          aria-describedby={errors.nickname ? 'nickname-error' : undefined}
+          {...register('nickname', {
+            required: '닉네임은 필수 입력 항목입니다.',
+          })}
+        />
+        {errors.nickname && (
+          <p id="nickname-error" style={{ color: 'red' }}>
+            {errors.nickname.message}
+          </p>
+        )}
+      </div>
+
       <button type="submit" disabled={isSubmitting}>
         {isSubmitting ? '가입 중...' : '회원가입'}
       </button>
