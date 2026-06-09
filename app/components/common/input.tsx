@@ -1,35 +1,42 @@
-import React, { useId } from 'react';
+import React, { ComponentProps } from 'react';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends ComponentProps<'input'> {
   label: string;
-  errorMessage?: string;
+  error?: string;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, errorMessage, className, id, ...props }, ref) => {
-    const uniqueId = useId();
-    const inputId = id || uniqueId;
+export function Input({
+  label,
+  error,
+  type = 'text',
+  ref,
+  ...props
+}: InputProps) {
+  return (
+    <div className="flex flex-col gap-1.5 w-full">
+      <label className="text-sm font-semibold text-black-700">{label}</label>
 
-    return (
-      <div
-        className={`flex flex-col gap-1.5 w-full max-w-sm ${className || ''}`}
-      >
-        <label htmlFor={inputId} className="text-sm font-medium text-gray-700">
-          {label}
-        </label>
+      <input
+        ref={ref}
+        type={type}
+        className={`px-4 py-2.5 rounded-lg border text-base transition-all duration-200
+          focus:outline-none focus:ring-2
+          ${
+            error
+              ? 'border-state focus:border-state focus:ring-state/20'
+              : 'border-gray-200 focus:border-blue-700 focus:ring-blue-500/20'
+          }`}
+        {...props}
+      />
 
-        <input
-          ref={ref}
-          id={inputId}
-          className={`w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 transition-all
-            ${errorMessage ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-blue-300'}`}
-          {...props}
-        />
-
-        {errorMessage && <p className="text-xs text-red-500">{errorMessage}</p>}
-      </div>
-    );
-  },
-);
-
-Input.displayName = 'Input';
+      {error && (
+        <p
+          className="text-xs text-state font-medium mt-0.5"
+          id={`${props.name}-error`}
+        >
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
