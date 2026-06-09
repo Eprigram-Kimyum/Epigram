@@ -44,7 +44,7 @@ jobs:
           # JSON 페이로드 안전하게 생성 (jq 도구 활용)
           PAYLOAD=$(jq -n --arg p "$PROMPT" --arg d "$DIFF_CONTENT" '{contents: [{parts: [{text: ($p + "\n\n" + $d)}]}]}')
 
-          # Gemini API 호출 (빠르고 효율적인 gemini-1.5-flash 모델 적용)
+          # Gemini API 호출 (빠르고 효율적인 gemini-3.1-flash 모델 적용)
           RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash:generateContent?key=${GEMINI_API_KEY}" \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD")
