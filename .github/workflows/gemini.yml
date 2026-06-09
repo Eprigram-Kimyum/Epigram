@@ -1,0 +1,60 @@
+name: Gemini Commit Code Reviewer
+
+on:
+  push:
+    branches:
+      - '**'
+
+permissions:
+  contents: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Analyze Diff and Call Gemini API
+        id: gemini_review
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 1. 직전 커밋과의 차이점(diff) 추출
+          if git rev-parse HEAD~1 >/dev/null 2>&1; then
+            git diff HEAD~1 HEAD > diff.txt
+          else
+            echo "이전 커밋이 존재하지 않아 비교할 수 없습니다."
+            exit 0
+          fi
+
+          # 변경 사항이 비어있다면 종료
+          if [ ! -s diff.txt ]; then
+            echo "변경된 코드 내용이 없습니다."
+            exit 0
+          fi
+
+          # 2. 제미나이에게 보낼 프롬프트와 코드 병합
+          PROMPT="당신은 전문 프론트엔드 개발자이자 멘토입니다. 다음 git diff 변경 사항을 세밀히 분석하여, 코드의 성능 최적화, 가독성, 잠재적 버그, 그리고 웹 표준/접근성 관점에서 개선할 점을 한국어로 친절하게 리뷰해 주세요."
+          DIFF_CONTENT=$(cat diff.txt)
+
+          # JSON 페이로드 안전하게 생성 (jq 도구 활용)
+          PAYLOAD=$(jq -n --arg p "$PROMPT" --arg d "$DIFF_CONTENT" '{contents: [{parts: [{text: ($p + "\n\n" + $d)}]}]}')
+
+          # Gemini API 호출 (빠르고 효율적인 gemini-3.1-flash 모델 적용)
+          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash:generateContent?key=${GEMINI_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD")
+
+          # 응답 파싱 및 텍스트 추출
+          REVIEW_TEXT=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text // "리뷰 결과를 파싱하지 못했습니다."')
+
+          # 3. GitHub API를 통해 해당 커밋에 댓글 작성
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/commits/${{ github.sha }}/comments \
+            -f body="$REVIEW_TEXT"
