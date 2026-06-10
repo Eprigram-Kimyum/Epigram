@@ -1,3 +1,13 @@
+export interface UserInfo {
+  id: number;
+  email: string;
+  nickname: string;
+  teamId: string;
+  updatedAt: string;
+  createdAt: string;
+  image: string | null;
+}
+
 export interface SignUpRequest {
   email: string;
   nickname: string;
@@ -8,11 +18,16 @@ export interface SignUpRequest {
 export interface SignUpResponse {
   accessToken: string;
   refreshToken: string;
-  user: {
-    id: number;
-    email: string;
-    nickname: string;
-    createdAt: string;
-    image: string | null;
-  };
+  user: UserInfo;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: UserInfo;
 }
