@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import toast from 'react-hot-toast';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { SignUpRequest } from '../apis/auth/type';
@@ -37,6 +38,7 @@ export default function SignUpPage() {
       await registerUser(payload);
 
       router.push('/');
+      toast.success('회원가입이 완료되었습니다.');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const serverMessage = error.response.data?.message || '';
@@ -53,8 +55,8 @@ export default function SignUpPage() {
   };
 
   return (
-    <main>
-      <h2>Epigram</h2>
+    <main style={{ padding: '40px' }}>
+      <h2>Epigram 회원가입</h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* 이메일 입력창 */}
