@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import { LoginRequest } from '../apis/auth/type';
 import { loginUser } from '../apis/auth/auth';
 import { setAuthCookies } from '../apis/auth/actions';
-import { Input } from '../components/common/input';
-import Button from '../components/common/button';
+import { Input } from '../components/common/Input';
+import Button from '../components/common/Button';
 import axios from 'axios';
 
 export default function LoginPage() {
