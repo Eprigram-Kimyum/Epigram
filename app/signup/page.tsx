@@ -21,7 +21,7 @@ export default function SignUpPage() {
     handleSubmit,
     getValues,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitting }, // isSubmitting 추가
   } = useForm<SignUpFormInput>({
     mode: 'onBlur',
   });
@@ -37,8 +37,10 @@ export default function SignUpPage() {
     try {
       await registerUser(payload);
 
-      router.push('/');
       toast.success('회원가입이 완료되었습니다.');
+
+      // TODO: 자동 로그인 처리(토큰 저장) 또는 로그인 페이지로 이동
+      router.push('/');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const serverMessage = error.response.data?.message || '';
@@ -55,7 +57,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <main style={{ padding: '40px' }}>
+    <main>
       <h2>Epigram 회원가입</h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -124,11 +126,8 @@ export default function SignUpPage() {
           })}
         />
 
-        <button
-          type="submit"
-          style={{ padding: '10px 20px', marginTop: '10px' }}
-        >
-          가입하기
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? '가입 중...' : '가입하기'}
         </button>
       </form>
     </main>
