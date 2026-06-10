@@ -38,7 +38,7 @@ export default function SignUpPage() {
 
       toast.success('회원가입이 완료되었습니다.');
 
-      router.push('/login');
+      router.replace('/login');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const serverMessage = error.response.data?.message || '';

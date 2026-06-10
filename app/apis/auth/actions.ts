@@ -26,10 +26,10 @@ export async function setAuthCookies(
   });
 }
 
-redirect('/');
-
 export async function removeAuthCookies() {
   const cookieStore = await cookies();
   cookieStore.delete('accessToken');
   cookieStore.delete('refreshToken');
+
+  redirect('/');
 }
