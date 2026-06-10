@@ -24,9 +24,9 @@ export async function setAuthCookies(
     path: '/',
     maxAge: 60 * 60 * 24 * 7, // 7일
   });
-
-  redirect('/');
 }
+
+redirect('/');
 
 export async function removeAuthCookies() {
   const cookieStore = await cookies();
