@@ -1,9 +1,8 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 
-export async function setAuthCookiesAndRedirect(
+export async function setAuthCookies(
   accessToken: string,
   refreshToken: string,
 ) {
@@ -24,6 +23,10 @@ export async function setAuthCookiesAndRedirect(
     path: '/',
     maxAge: 60 * 60 * 24 * 7, // 7일
   });
+}
 
-  redirect('/');
+export async function removeAuthCookies() {
+  const cookieStore = await cookies();
+  cookieStore.delete('accessToken');
+  cookieStore.delete('refreshToken');
 }

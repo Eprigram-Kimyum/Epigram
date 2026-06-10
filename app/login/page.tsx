@@ -2,17 +2,21 @@
 
 import toast from 'react-hot-toast';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import { LoginRequest } from '../apis/auth/type';
 import { loginUser } from '../apis/auth/auth';
-import { setAuthCookiesAndRedirect } from '../apis/auth/actions';
+import { setAuthCookies } from '../apis/auth/actions';
 import { Input } from '../components/common/input';
 import Button from '../components/common/button';
 import axios from 'axios';
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginRequest>({
     mode: 'onBlur',
@@ -21,13 +25,24 @@ export default function LoginPage() {
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
     try {
       const { accessToken, refreshToken } = await loginUser(data);
-      await setAuthCookiesAndRedirect(accessToken, refreshToken);
+
+      await setAuthCookies(accessToken, refreshToken);
+
+      router.push('/');
+      router.refresh();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const serverMessage = error.response.data?.message || '';
-        toast.error(serverMessage || '로그인에 실패했습니다.');
+
+        if (serverMessage.includes('이메일')) {
+          setError('email', { type: 'server', message: serverMessage });
+        } else if (serverMessage.includes('비밀번호')) {
+          setError('password', { type: 'server', message: serverMessage });
+        } else {
+          toast.error(serverMessage || '로그인에 실패했습니다.');
+        }
       } else {
-        toast.error('알 수 없는 오류가 발생했습니다.');
+        toast.error('네트워크 연결이 원활하지 않습니다.');
       }
     }
   };
@@ -36,13 +51,14 @@ export default function LoginPage() {
     <main>
       <h1>Epigram</h1>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Input
           id="email"
           label="이메일"
           type="email"
           placeholder="이메일을 입력해 주세요"
           error={errors.email?.message}
+          aria-invalid={!!errors.email}
           {...register('email', {
             required: '이메일은 필수 입력 항목입니다.',
             pattern: {
@@ -58,6 +74,7 @@ export default function LoginPage() {
           type="password"
           placeholder="비밀번호를 입력해 주세요"
           error={errors.password?.message}
+          aria-invalid={!!errors.password}
           {...register('password', {
             required: '비밀번호는 필수 입력 항목입니다.',
           })}
