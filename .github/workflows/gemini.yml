@@ -3,10 +3,10 @@ name: Gemini 3.5 Extended Commit Code Reviewer
 on:
   push:
     branches:
-      - '**' # 모든 브랜치의 푸시를 감지합니다.
+      - '**'
 
 permissions:
-  contents: write # 커밋 댓글 작성을 위한 권한 설정
+  contents: write
 
 jobs:
   review:
@@ -15,15 +15,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2 # 직전 커밋과 비교하기 위해 히스토리를 2개 가져옵니다.
+          fetch-depth: 2
 
-      - name: Analyze Diff and Call Gemini 3.5 API
+      - name: Analyze Diff and Call Gemini 3.5 API with Retry
         id: gemini_review
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # 1. 직전 커밋과의 차이점(diff) 추출 (불필요한 잠금 파일 및 빌드 폴더는 제외하여 토큰 절약)
+          # 1. 직전 커밋과의 차이점(diff) 추출
           if git rev-parse HEAD~1 >/dev/null 2>&1; then
             git diff HEAD~1 HEAD -- . ':(exclude)package-lock.json' ':(exclude)yarn.lock' ':(exclude)dist/*' > diff.txt
           else
@@ -40,23 +40,42 @@ jobs:
           PROMPT="당신은 전문 프론트엔드 개발자이자 멘토입니다. 다음 git diff 변경 사항을 세밀히 분석하여, 코드의 성능 최적화, 가독성, 잠재적 버그, 그리고 웹 표준/접근성 관점에서 개선할 점을 한국어로 친절하게 리뷰해 주세요."
           DIFF_CONTENT=$(cat diff.txt)
 
-          # [핵심 변경] 최신 Gemini 3.5 구조에 맞추어 generationConfig 내부에 thinkingConfig 설정 주입
+          # 페이로드 생성 (과부하가 너무 잦다면 아래 "HIGH"를 "MEDIUM"으로 낮추는 것도 방법입니다)
           PAYLOAD=$(jq -n --arg p "$PROMPT" --arg d "$DIFF_CONTENT" \
             '{
               contents: [{parts: [{text: ($p + "\n\n" + $d)}]}],
               generationConfig: {
                 thinkingConfig: {
-                  thinkingLevel: "MEDIUM"
+                  thinkingLevel: "MEDIUM",
+                  reasoningLevel: "MEDIUM" 
                 }
               }
             }')
 
-          # [핵심 변경] 엔드포인트 주소를 최신 gemini-3.5-flash 모델로 변경
-          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GEMINI_API_KEY}" \
-            -H "Content-Type: application/json" \
-            -d "$PAYLOAD")
+          # 3. [핵심 개선] 지수 백오프(Exponential Backoff) 적용 자동 재시도 루프
+          MAX_RETRIES=3
+          RETRY_DELAY=5
+          RESPONSE=""
 
-          # 3. 응답 검증 및 예외 처리
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Gemini API 호출 중... (시도 $i/$MAX_RETRIES)"
+            RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GEMINI_API_KEY}" \
+              -H "Content-Type: application/json" \
+              -d "$PAYLOAD")
+
+            # 에러 메시지에 'high demand' 또는 'quota' 관련 문구가 없다면 루프 탈출 (정상 작동 혹은 일반 에러)
+            if echo "$RESPONSE" | grep -q "experiencing high demand"; then
+              if [ $i -lt $MAX_RETRIES ]; then
+                echo "⚠️ 서버 과부하 감지. ${RETRY_DELAY}초 후 재시도합니다..."
+                sleep $RETRY_DELAY
+                RETRY_DELAY=$((RETRY_DELAY * 2)) # 대기 시간을 5초 -> 10초로 늘림
+              fi
+            else
+              break
+            fi
+          done
+
+          # 4. 응답 검증 및 예외 처리
           if echo "$RESPONSE" | jq -e '.candidates[0].content.parts[0].text' >/dev/null 2>&1; then
             REVIEW_TEXT=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text')
           elif echo "$RESPONSE" | jq -e '.error' >/dev/null 2>&1; then
@@ -66,7 +85,7 @@ jobs:
             REVIEW_TEXT="⚠️ **리뷰 생성 실패:** 제미나이가 응답을 거부했거나 예기치 못한 형식의 데이터가 반환되었습니다."
           fi
 
-          # 4. GitHub API를 통해 해당 커밋에 최종 리뷰 댓글 작성
+          # 5. GitHub API를 통해 해당 커밋에 최종 리뷰 댓글 작성
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
