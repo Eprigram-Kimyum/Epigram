@@ -46,7 +46,7 @@ jobs:
               contents: [{parts: [{text: ($p + "\n\n" + $d)}]}],
               generationConfig: {
                 thinkingConfig: {
-                  thinkingLevel: "HIGH"
+                  thinkingLevel: "MEDIUM"
                 }
               }
             }')
