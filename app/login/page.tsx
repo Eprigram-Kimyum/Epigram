@@ -1,14 +1,13 @@
 'use client';
 
-import React from 'react';
 import toast from 'react-hot-toast';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { LoginRequest } from '../apis/auth/type';
 import { loginUser } from '../apis/auth/auth';
+import { setAuthCookies } from '../apis/auth/actions';
 import { Input } from '../components/common/input';
 import Button from '../components/common/button';
-import { setAuthCookies } from '../utils/authCookie';
 import axios from 'axios';
 
 export default function LoginPage() {
@@ -18,6 +17,7 @@ export default function LoginPage() {
     register,
     handleSubmit,
     setError,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<LoginRequest>({
     mode: 'onBlur',
@@ -27,9 +27,10 @@ export default function LoginPage() {
     try {
       const { accessToken, refreshToken } = await loginUser(data);
 
-      setAuthCookies(accessToken, refreshToken);
+      await setAuthCookies(accessToken, refreshToken);
 
       router.push('/');
+      router.refresh();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const serverMessage = error.response.data?.message || '';
@@ -49,8 +50,7 @@ export default function LoginPage() {
 
   return (
     <main>
-      <h2>Epigram 로그인</h2>
-
+      <h2>Epigram</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Input
           id="email"
@@ -75,11 +75,14 @@ export default function LoginPage() {
           error={errors.password?.message}
           {...register('password', {
             required: '비밀번호는 필수 입력 항목입니다.',
+            validate: (value) =>
+              value === getValues('password') ||
+              '비밀번호가 일치하지 않습니다.',
           })}
         />
 
-        <Button type="submit" isLoading={isSubmitting}>
-          로그인
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? '로그인 중...' : '로그인'}
         </Button>
       </form>
     </main>
