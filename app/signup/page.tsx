@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
+import toast from 'react-hot-toast';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useRouter } from 'next/navigation'; // 핵심포인트 1: Next.js App Router용 라우터 임포트
+import { useRouter } from 'next/navigation';
 import { SignUpRequest } from '../apis/auth/type';
 import { registerUser } from '../apis/auth/auth';
 import { Input } from '../components/common/input';
@@ -13,7 +14,7 @@ interface SignUpFormInput extends SignUpRequest {
 }
 
 export default function SignUpPage() {
-  const router = useRouter(); // 핵심포인트 2: 라우터 인스턴스 초기화
+  const router = useRouter();
 
   const {
     register,
@@ -34,11 +35,10 @@ export default function SignUpPage() {
     };
 
     try {
-      // 모든 유효성 검사가 통과하고 실제 서버 API 요청이 성공했을 때만 이 블록이 실행됩니다.
       await registerUser(payload);
 
-      // 핵심포인트 3: 회원가입 성공 시 홈 화면('/')으로 페이지를 리다이렉트합니다.
       router.push('/');
+      toast.success('회원가입이 완료되었습니다.');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const serverMessage = error.response.data?.message || '';
@@ -58,7 +58,6 @@ export default function SignUpPage() {
     <main style={{ padding: '40px' }}>
       <h2>Epigram 회원가입</h2>
 
-      {/* handleSubmit이 감싸고 있으므로 가입하기 클릭 및 입력창 내 엔터키 작동이 보장됩니다. */}
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* 이메일 입력창 */}
         <Input
@@ -87,9 +86,9 @@ export default function SignUpPage() {
             required: '비밀번호는 필수 입력 항목입니다.',
             pattern: {
               value:
-                /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\]:;<>|./?~-]).{12,}$/,
+                /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\]:;<>|./?~-]).{8,}$/,
               message:
-                '비밀번호는 영어, 숫자, 특수문자를 포함하여 12자 이상이어야 합니다.',
+                '비밀번호는 영어, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.',
             },
             deps: ['passwordConfirm'],
           })}
