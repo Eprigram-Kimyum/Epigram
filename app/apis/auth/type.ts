@@ -5,7 +5,7 @@ export interface UserInfo {
   teamId: string;
   updatedAt: string;
   createdAt: string;
-  image: string | null; // 이미지가 없을 때는 null, 있을 때는 string(URL)을 고려한 설계
+  image: string | null;
 }
 
 export interface SignUpRequest {
@@ -23,7 +23,7 @@ export interface SignUpResponse {
 
 export interface LoginRequest {
   email: string;
-  password?: string;
+  password: string;
 }
 
 export interface LoginResponse {
