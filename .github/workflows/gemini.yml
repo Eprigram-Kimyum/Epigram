@@ -26,7 +26,6 @@ jobs:
           BEFORE_SHA="${{ github.event.before }}"
           AFTER_SHA="${{ github.event.after }}"
 
-          # 새 브랜치가 생성되어 이전 SHA가 존재하지 않는 경우(000000...) 예외 처리
           if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
             if git rev-parse HEAD~1 >/dev/null 2>&1; then
               BEFORE_SHA="HEAD~1"
@@ -36,7 +35,6 @@ jobs:
             fi
           fi
 
-          # 이번 푸시에 포함된 모든 커밋의 누적 차이점 추출
           git diff $BEFORE_SHA $AFTER_SHA -- . ':(exclude)package-lock.json' ':(exclude)yarn.lock' ':(exclude)dist/*' > diff.txt
 
           if [ ! -s diff.txt ]; then
@@ -46,23 +44,28 @@ jobs:
 
           PROMPT="당신은 전문 프론트엔드 개발자이자 멘토입니다. 다음 git diff 변경 사항을 세밀히 분석하여, 코드의 성능 최적화, 가독성, 잠재적 버그, 그리고 웹 표준/접근성 관점에서 개선할 점을 한국어로 리뷰해 주세요."
           DIFF_CONTENT=$(cat diff.txt)
+          PAYLOAD=$(jq -n --arg p "$PROMPT" --arg d "$DIFF_CONTENT" '{contents: [{parts: [{text: ($p + "\n\n" + $d)}]}]}')
 
-          PAYLOAD=$(jq -n --arg p "$PROMPT" --arg d "$DIFF_CONTENT" \
-            '{
-              contents: [{parts: [{text: ($p + "\n\n" + $d)}]}]
-            }')
 
-          echo "Gemini 3.5 Flash 일반 모드로 분석을 시작합니다."
-          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GEMINI_API_KEY}" \
-            -H "Content-Type: application/json" \
-            -d "$PAYLOAD")
+          call_gemini() {
+            curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GEMINI_API_KEY}" \
+              -H "Content-Type: application/json" \
+              -d "$PAYLOAD"
+          }
 
-          # 4. 응답 검증 및 예외 처리
+          RESPONSE=$(call_gemini)
+
+          if echo "$RESPONSE" | grep -q "Quota exceeded"; then
+            echo "⚠️ 제미나이 API 무료 한도(RPM) 초과 감지. 5초 대기 후 자동으로 재시도합니다..."
+            sleep 5
+            RESPONSE=$(call_gemini)
+          fi
+
           if echo "$RESPONSE" | jq -e '.candidates[0].content.parts[0].text' >/dev/null 2>&1; then
             REVIEW_TEXT=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text')
           elif echo "$RESPONSE" | jq -e '.error' >/dev/null 2>&1; then
             ERROR_MSG=$(echo "$RESPONSE" | jq -r '.error.message')
-            REVIEW_TEXT="⚠️ **Gemini API 에러 발생:** $ERROR_MSG"
+            REVIEW_TEXT="⚠️ **Gemini API 최종 에러 발생:** $ERROR_MSG"
           else
             REVIEW_TEXT="⚠️ **리뷰 생성 실패:** 예기치 못한 형식의 데이터가 반환되었습니다."
           fi
