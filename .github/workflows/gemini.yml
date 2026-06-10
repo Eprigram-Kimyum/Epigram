@@ -47,7 +47,6 @@ jobs:
               generationConfig: {
                 thinkingConfig: {
                   thinkingLevel: "MEDIUM",
-                  reasoningLevel: "MEDIUM" 
                 }
               }
             }')
