@@ -37,8 +37,8 @@ export default function SignUpPage() {
     try {
       await registerUser(payload);
 
-      router.push('/');
       toast.success('회원가입이 완료되었습니다.');
+      router.push('/');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const serverMessage = error.response.data?.message || '';
@@ -55,7 +55,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <main style={{ padding: '40px' }}>
+    <main>
       <h2>Epigram 회원가입</h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -124,12 +124,7 @@ export default function SignUpPage() {
           })}
         />
 
-        <button
-          type="submit"
-          style={{ padding: '10px 20px', marginTop: '10px' }}
-        >
-          가입하기
-        </button>
+        <button type="submit">가입하기</button>
       </form>
     </main>
   );
