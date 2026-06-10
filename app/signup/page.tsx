@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import toast from 'react-hot-toast';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
@@ -21,7 +20,7 @@ export default function SignUpPage() {
     handleSubmit,
     getValues,
     setError,
-    formState: { errors, isSubmitting }, // isSubmitting 추가
+    formState: { errors, isSubmitting },
   } = useForm<SignUpFormInput>({
     mode: 'onBlur',
   });
@@ -39,8 +38,7 @@ export default function SignUpPage() {
 
       toast.success('회원가입이 완료되었습니다.');
 
-      // TODO: 자동 로그인 처리(토큰 저장) 또는 로그인 페이지로 이동
-      router.push('/');
+      router.push('/login');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const serverMessage = error.response.data?.message || '';
@@ -61,7 +59,6 @@ export default function SignUpPage() {
       <h2>Epigram 회원가입</h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* 이메일 입력창 */}
         <Input
           id="email"
           label="이메일"
@@ -77,7 +74,6 @@ export default function SignUpPage() {
           })}
         />
 
-        {/* 비밀번호 입력창 */}
         <Input
           id="password"
           label="비밀번호"
@@ -96,7 +92,6 @@ export default function SignUpPage() {
           })}
         />
 
-        {/* 비밀번호 확인 입력란 */}
         <Input
           id="passwordConfirm"
           type="password"
@@ -110,7 +105,6 @@ export default function SignUpPage() {
           })}
         />
 
-        {/* 닉네임 입력창 */}
         <Input
           id="nickname"
           label="닉네임"
