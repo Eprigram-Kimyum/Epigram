@@ -13,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
-      <body>
+    <html lang="ko" className="h-full antialiased">
+      <body className="font-main min-h-full flex flex-col">
         {children}
         <Toaster position="top-center" reverseOrder={false} />
       </body>
