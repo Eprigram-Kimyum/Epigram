@@ -8,6 +8,7 @@ import { LoginRequest } from '../apis/auth/type';
 import { loginUser } from '../apis/auth/auth';
 import { Input } from '../components/common/input';
 import Button from '../components/common/button';
+import { setAuthCookies } from '../utils/authCookie';
 import axios from 'axios';
 
 export default function LoginPage() {
@@ -24,9 +25,9 @@ export default function LoginPage() {
 
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
     try {
-      await loginUser(data);
+      const { accessToken, refreshToken } = await loginUser(data);
 
-      // 2. TODO: 토큰 및 유저 정보 저장 로직 수행
+      setAuthCookies(accessToken, refreshToken);
 
       router.push('/');
     } catch (error) {
