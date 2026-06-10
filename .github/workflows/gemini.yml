@@ -1,4 +1,4 @@
-name: Gemini Commit Code Reviewer
+name: Gemini 3.5 Extended Commit Code Reviewer
 
 on:
   push:
@@ -17,42 +17,71 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Analyze Diff and Call Gemini API
+      - name: Analyze Diff and Call Gemini 3.5 API with Fallback
         id: gemini_review
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # 1. 직전 커밋과의 차이점(diff) 추출
+          # 1. 직전 커밋과의 차이점(diff) 추출 (잠금 및 빌드 파일 제외)
           if git rev-parse HEAD~1 >/dev/null 2>&1; then
-            git diff HEAD~1 HEAD > diff.txt
+            git diff HEAD~1 HEAD -- . ':(exclude)package-lock.json' ':(exclude)yarn.lock' ':(exclude)dist/*' > diff.txt
           else
             echo "이전 커밋이 존재하지 않아 비교할 수 없습니다."
             exit 0
           fi
 
-          # 변경 사항이 비어있다면 종료
           if [ ! -s diff.txt ]; then
             echo "변경된 코드 내용이 없습니다."
             exit 0
           fi
 
-          # 2. 제미나이에게 보낼 프롬프트와 코드 병합
-          PROMPT="당신은 전문 프론트엔드 개발자이자 멘토입니다. 다음 git diff 변경 사항을 세밀히 분석하여, 코드의 성능 최적화, 가독성, 잠재적 버그, 그리고 웹 표준/접근성 관점에서 개선할 점을 한국어로 친절하게 리뷰해 주세요."
+          # 2. 프롬프트 및 변경 내용 변수화
+          PROMPT="당신은 전문 프론트엔드 개발자이자 멘토입니다. 다음 git diff 변경 사항을 세밀히 분석하여, 코드의 성능 최적화, 가독성, 잠재적 버그, 그리고 웹 표준/접근성 관점에서 개선할 점을 한국어로 리뷰해 주세요."
           DIFF_CONTENT=$(cat diff.txt)
 
-          # JSON 페이로드 안전하게 생성 (jq 도구 활용)
-          PAYLOAD=$(jq -n --arg p "$PROMPT" --arg d "$DIFF_CONTENT" '{contents: [{parts: [{text: ($p + "\n\n" + $d)}]}]}')
+          # 3. 두 가지 버전의 페이로드 준비 
+          PAYLOAD_HIGH=$(jq -n --arg p "$PROMPT" --arg d "$DIFF_CONTENT" \
+            '{
+              contents: [{parts: [{text: ($p + "\n\n" + $d)}]}],
+              generationConfig: {
+                thinkingConfig: {
+                  thinkingLevel: "HIGH"
+                }
+              }
+            }')
 
-          # Gemini API 호출 (빠르고 효율적인 gemini-3.1-flash 모델 적용)
-          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash:generateContent?key=${GEMINI_API_KEY}" \
+          PAYLOAD_STANDARD=$(jq -n --arg p "$PROMPT" --arg d "$DIFF_CONTENT" \
+            '{
+              contents: [{parts: [{text: ($p + "\n\n" + $d)}]}]
+            }')
+
+          # 4. 1차 시도: HIGH 모드 호출
+          echo "1차 시도: Gemini 3.5 Flash (사고 수준: HIGH) 분석을 시작합니다."
+          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GEMINI_API_KEY}" \
             -H "Content-Type: application/json" \
-            -d "$PAYLOAD")
+            -d "$PAYLOAD_HIGH")
 
-          # 응답 파싱 및 텍스트 추출
-          REVIEW_TEXT=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text // "리뷰 결과를 파싱하지 못했습니다."')
+          # 5. 서버 과부하(high demand) 발생 시 Standard 모드로 대처 
+          if echo "$RESPONSE" | grep -q "experiencing high demand"; then
+            echo "⚠️ HIGH 모드 전용 자원 과부하가 감지되었습니다. 일반(Standard) 모드로 전환하여 2차 시도합니다..."
+            sleep 3
+            RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GEMINI_API_KEY}" \
+              -H "Content-Type: application/json" \
+              -d "$PAYLOAD_STANDARD")
+          fi
 
-          # 3. GitHub API를 통해 해당 커밋에 댓글 작성
+          # 6. 최종 응답 검증 및 예외 처리
+          if echo "$RESPONSE" | jq -e '.candidates[0].content.parts[0].text' >/dev/null 2>&1; then
+            REVIEW_TEXT=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text')
+          elif echo "$RESPONSE" | jq -e '.error' >/dev/null 2>&1; then
+            ERROR_MSG=$(echo "$RESPONSE" | jq -r '.error.message')
+            REVIEW_TEXT="⚠️ **Gemini API 최종 에러 발생:** $ERROR_MSG"
+          else
+            REVIEW_TEXT="⚠️ **리뷰 생성 실패:** 예기치 못한 형식의 데이터가 반환되었습니다."
+          fi
+
+          # 7. GitHub API를 통해 해당 커밋에 댓글 작성
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
