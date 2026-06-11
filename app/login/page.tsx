@@ -5,7 +5,6 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { LoginRequest } from '../apis/auth/type';
 import { loginUser } from '../apis/auth/auth';
-import { setAuthCookies } from '../apis/auth/actions';
 import { Input } from '../components/common/Input';
 import Button from '../components/common/Button';
 import axios from 'axios';
@@ -24,15 +23,16 @@ export default function LoginPage() {
 
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
     try {
-      const { accessToken, refreshToken } = await loginUser(data);
+      await loginUser(data);
 
-      await setAuthCookies(accessToken, refreshToken);
+      toast.success('로그인에 성공했습니다.');
 
       router.push('/');
       router.refresh();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        const serverMessage = error.response.data?.message || '';
+        const serverMessage =
+          error.response.data?.error || error.response.data?.message || '';
 
         if (serverMessage.includes('이메일')) {
           setError('email', { type: 'server', message: serverMessage });

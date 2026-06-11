@@ -1,4 +1,4 @@
-import instance from '../instance';
+import axios from 'axios';
 import {
   SignUpRequest,
   SignUpResponse,
@@ -6,22 +6,25 @@ import {
   LoginResponse,
 } from './type';
 
+const authInstance = axios.create({
+  baseURL: '/api/auth',
+});
+
 // 회원가입 API
 export const registerUser = async (
   signUpData: SignUpRequest,
 ): Promise<SignUpResponse> => {
-  return instance.post(
-    '/auth/signUp',
+  const response = await authInstance.post<SignUpResponse>(
+    '/signUp',
     signUpData,
-  ) as unknown as Promise<SignUpResponse>;
+  );
+  return response.data;
 };
 
-// 로그인 API 추가
+// 로그인 API
 export const loginUser = async (
   loginData: LoginRequest,
 ): Promise<LoginResponse> => {
-  return instance.post(
-    '/auth/signIn',
-    loginData,
-  ) as unknown as Promise<LoginResponse>;
+  const response = await authInstance.post('/signIn', loginData);
+  return response.data as LoginResponse;
 };
