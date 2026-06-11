@@ -9,8 +9,15 @@ interface RouteParams {
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const { path } = await params;
-    const subPath = path.join('/');
 
+    if (!path || !Array.isArray(path)) {
+      return NextResponse.json(
+        { error: '잘못된 경로 요청입니다.' },
+        { status: 400 },
+      );
+    }
+
+    const subPath = path.join('/');
     const body = await request.json();
 
     const res = await fetch(
@@ -22,19 +29,26 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       },
     );
 
-    const data = await res.json();
-
     if (!res.ok) {
-      return NextResponse.json(
-        { error: data.message || '인증 실패' },
-        { status: res.status },
-      );
+      const contentType = res.headers.get('content-type');
+      let errorMessage = '인증 실패';
+
+      if (contentType && contentType.includes('application/json')) {
+        const errorData = await res.json();
+        errorMessage = errorData.message || errorMessage;
+      } else {
+        const errorText = await res.text();
+        errorMessage =
+          errorText || `서버 오류가 발생했습니다. (Status: ${res.status})`;
+      }
+
+      return NextResponse.json({ error: errorMessage }, { status: res.status });
     }
 
+    const data = await res.json();
     const response = NextResponse.json(data);
 
     const cookieHeaders = res.headers.getSetCookie();
-
     if (cookieHeaders.length > 0) {
       cookieHeaders.forEach((cookie) => {
         response.headers.append('set-cookie', cookie);
