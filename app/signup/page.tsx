@@ -41,22 +41,25 @@ export default function SignUpPage() {
       router.replace('/login');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        const serverMessage = error.response.data?.message || '';
+        const serverMessage =
+          error.response.data?.error || error.response.data?.message || '';
 
         if (serverMessage.includes('이메일')) {
           setError('email', { type: 'server', message: serverMessage });
         } else if (serverMessage.includes('닉네임')) {
           setError('nickname', { type: 'server', message: serverMessage });
         } else {
-          alert(serverMessage || '회원가입 중 오류가 발생했습니다.');
+          toast.error(serverMessage || '회원가입 중 오류가 발생했습니다.');
         }
+      } else {
+        toast.error('네트워크 연결이 원활하지 않습니다.');
       }
     }
   };
 
   return (
     <main>
-      <h2>Epigram 회원가입</h2>
+      <h2>Epigram</h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Input
