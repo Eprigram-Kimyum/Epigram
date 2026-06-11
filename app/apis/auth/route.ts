@@ -40,7 +40,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         response.headers.append('set-cookie', cookie);
       });
     }
-    // =======================================================
 
     return response;
   } catch (error) {
