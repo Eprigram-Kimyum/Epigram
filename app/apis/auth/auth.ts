@@ -14,8 +14,11 @@ const authInstance = axios.create({
 export const registerUser = async (
   signUpData: SignUpRequest,
 ): Promise<SignUpResponse> => {
-  const response = await authInstance.post('/signUp', signUpData);
-  return response.data as SignUpResponse;
+  const response = await authInstance.post<SignUpResponse>(
+    '/signUp',
+    signUpData,
+  );
+  return response.data;
 };
 
 // 로그인 API

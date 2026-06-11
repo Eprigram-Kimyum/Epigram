@@ -31,12 +31,16 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const cookieHeader = res.headers.get('set-cookie');
     const response = NextResponse.json(data);
 
-    if (cookieHeader) {
-      response.headers.set('set-cookie', cookieHeader);
+    const cookieHeaders = res.headers.getSetCookie();
+
+    if (cookieHeaders.length > 0) {
+      cookieHeaders.forEach((cookie) => {
+        response.headers.append('set-cookie', cookie);
+      });
     }
+    // =======================================================
 
     return response;
   } catch (error) {
