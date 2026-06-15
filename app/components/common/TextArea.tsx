@@ -23,7 +23,7 @@ export function TextArea({
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div>
         {label && <label htmlFor={textareaId}>{label}</label>}
         {showCount && maxLength && (
           <span>
