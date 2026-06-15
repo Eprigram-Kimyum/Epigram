@@ -13,8 +13,7 @@ const getValidToken = (): string | null => {
 };
 
 const config: AxiosRequestConfig = {
-  baseURL:
-    process.env.NEXT_PUBLIC_API_URL || 'https://fe-project-epigram-api.vercel.app/23-kimyumin',
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',

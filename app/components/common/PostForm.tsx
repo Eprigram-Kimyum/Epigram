@@ -75,10 +75,6 @@ export function PostForm() {
     console.log('서버로 보낼 데이터:', submissionData);
   };
 
-  const onInvalid = async () => {
-    await trigger();
-  };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <TextArea
@@ -147,10 +143,11 @@ export function PostForm() {
         <div>
           {tags.map((tag, index) => (
             <button
+              type="button"
               key={index}
               onClick={() => removeTag(index)}
               style={{ cursor: 'pointer' }}
-              aria-label="태그 삭제"
+              aria-label={`${tag} 태그 삭제`}
             >
               #{tag}
             </button>
