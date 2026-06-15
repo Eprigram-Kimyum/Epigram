@@ -14,8 +14,7 @@ const getValidToken = (): string | null => {
 
 const config: AxiosRequestConfig = {
   baseURL:
-    process.env.NEXT_PUBLIC_API_URL ||
-    'https://fe-project-epigram-api.vercel.app/23-kimyumin',
+    process.env.NEXT_PUBLIC_API_URL || 'https://fe-project-epigram-api.vercel.app/23-kimyumin',
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
@@ -67,8 +66,7 @@ instance.interceptors.response.use(
         alert(ERROR_MESSAGES.server);
         break;
       default:
-        const serverMessage = (error.response.data as { message?: string })
-          ?.message;
+        const serverMessage = (error.response.data as { message?: string })?.message;
         alert(serverMessage || ERROR_MESSAGES.unknown);
     }
 

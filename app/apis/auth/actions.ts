@@ -3,10 +3,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-export async function setAuthCookies(
-  accessToken: string,
-  refreshToken: string,
-) {
+export async function setAuthCookies(accessToken: string, refreshToken: string) {
   const cookieStore = await cookies();
 
   cookieStore.set('accessToken', accessToken, {

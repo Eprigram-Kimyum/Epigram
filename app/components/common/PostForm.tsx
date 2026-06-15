@@ -17,6 +17,7 @@ export function PostForm() {
     register,
     handleSubmit,
     watch,
+    trigger,
     formState: { errors, isValid },
   } = useForm<EpigramFormData>({
     mode: 'onBlur',
@@ -30,6 +31,8 @@ export function PostForm() {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
   const [tagError, setTagError] = useState('');
+
+  const currentAuthorType = watch('authorType');
 
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === '#' || e.key === 'Enter' || e.key === ' ') {
@@ -62,17 +65,18 @@ export function PostForm() {
     setTagError('');
   };
 
-  const currentAuthorType = watch('authorType');
-  const currentContent = watch('content', '');
-
+  // 저장 버튼 클릭 시 실행되는 함수
   const onSubmit = (data: EpigramFormData) => {
     const submissionData = {
       ...data,
-      authorName:
-        data.authorType === '직접 입력' ? data.authorName : data.authorType,
+      authorName: data.authorType === '직접 입력' ? data.authorName : data.authorType,
       tags,
     };
     console.log('서버로 보낼 데이터:', submissionData);
+  };
+
+  const onInvalid = async () => {
+    await trigger();
   };
 
   return (
@@ -80,7 +84,6 @@ export function PostForm() {
       <TextArea
         label="내용"
         placeholder="500자 이내로 입력해주세요."
-        value={currentContent}
         error={errors.content?.message}
         {...register('content', {
           maxLength: {
@@ -98,12 +101,7 @@ export function PostForm() {
             직접 입력
           </label>
           <label>
-            <input
-              type="radio"
-              value="알 수 없음"
-              {...register('authorType')}
-            />
-            알 수 없음
+            <input type="radio" value="알 수 없음" {...register('authorType')} />알 수 없음
           </label>
           <label>
             <input type="radio" value="본인" {...register('authorType')} />
@@ -117,23 +115,20 @@ export function PostForm() {
           placeholder="저자 입력"
           error={errors.authorName?.message}
           {...register('authorName', {
-            required:
-              currentAuthorType === '직접 입력'
-                ? '저자를 입력해주세요.'
-                : false,
+            required: currentAuthorType === '직접 입력' ? '저자를 입력해주세요.' : false,
           })}
         />
       )}
 
-      <div>
-        <h3>출처</h3>
+      <fieldset>
+        <legend>출처</legend>
         <Input
           aria-label="출처 제목"
           placeholder="출처 제목 입력"
           error={errors.sourceTitle?.message}
           {...register('sourceTitle')}
         />
-      </div>
+      </fieldset>
       <Input
         aria-label="출처 관련 URL"
         type="url"
@@ -147,17 +142,18 @@ export function PostForm() {
         })}
       />
 
-      <div>
-        <h3>태그</h3>
+      <fieldset>
+        <legend>태그</legend>
         <div>
           {tags.map((tag, index) => (
-            <span
+            <button
               key={index}
               onClick={() => removeTag(index)}
               style={{ cursor: 'pointer' }}
+              aria-label="태그 삭제"
             >
-              #{tag} X
-            </span>
+              #{tag}
+            </button>
           ))}
         </div>
         <Input
@@ -168,11 +164,9 @@ export function PostForm() {
           onKeyDown={handleTagKeyDown}
           error={tagError}
         />
-      </div>
+      </fieldset>
 
-      <button type="submit" disabled={!isValid}>
-        작성 완료
-      </button>
+      <button type="submit">작성 완료</button>
     </form>
   );
 }

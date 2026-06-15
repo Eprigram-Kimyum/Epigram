@@ -38,12 +38,7 @@ const eslintConfig = defineConfig([
     },
   },
   {
-    files: [
-      '**/hooks/**/*.ts',
-      '**/hooks/**/*.tsx',
-      '**/use*.ts',
-      '**/use*.tsx',
-    ],
+    files: ['**/hooks/**/*.ts', '**/hooks/**/*.tsx', '**/use*.ts', '**/use*.tsx'],
     rules: {
       'unicorn/filename-case': [
         'error',

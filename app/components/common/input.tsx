@@ -5,14 +5,7 @@ interface InputProps extends ComponentProps<'input'> {
   error?: string;
 }
 
-export function Input({
-  label,
-  error,
-  type = 'text',
-  ref,
-  id,
-  ...props
-}: InputProps) {
+export function Input({ label, error, type = 'text', ref, id, ...props }: InputProps) {
   const uniqueId = useId();
   const inputId = id || uniqueId;
   const errorId = `${inputId}-error`;

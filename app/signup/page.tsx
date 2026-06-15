@@ -41,8 +41,7 @@ export default function SignUpPage() {
       router.replace('/login');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        const serverMessage =
-          error.response.data?.error || error.response.data?.message || '';
+        const serverMessage = error.response.data?.error || error.response.data?.message || '';
 
         if (serverMessage.includes('이메일')) {
           setError('email', { type: 'server', message: serverMessage });
@@ -86,10 +85,8 @@ export default function SignUpPage() {
           {...register('password', {
             required: '비밀번호는 필수 입력 항목입니다.',
             pattern: {
-              value:
-                /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\]:;<>|./?~-]).{8,}$/,
-              message:
-                '비밀번호는 영어, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.',
+              value: /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\]:;<>|./?~-]).{8,}$/,
+              message: '비밀번호는 영어, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.',
             },
             deps: ['passwordConfirm'],
           })}
@@ -102,9 +99,7 @@ export default function SignUpPage() {
           error={errors.passwordConfirm?.message}
           {...register('passwordConfirm', {
             required: '비밀번호 확인은 필수 입력 항목입니다.',
-            validate: (value) =>
-              value === getValues('password') ||
-              '비밀번호가 일치하지 않습니다.',
+            validate: (value) => value === getValues('password') || '비밀번호가 일치하지 않습니다.',
           })}
         />
 
