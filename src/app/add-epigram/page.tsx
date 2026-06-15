@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { PostForm } from '../components/common/PostForm';
+import { PostForm } from '../../components/common/PostForm';
 
 export default function AddEpigramPage() {
   return (
