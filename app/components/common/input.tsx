@@ -20,7 +20,6 @@ export function Input({
   return (
     <div>
       {label && <label htmlFor={inputId}>{label}</label>}
-
       <input
         id={inputId}
         ref={ref}
@@ -29,7 +28,6 @@ export function Input({
         aria-describedby={error ? errorId : undefined}
         {...props}
       />
-
       {error && <p id={errorId}>{error}</p>}
     </div>
   );
