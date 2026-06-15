@@ -11,10 +11,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const { path } = await params;
 
     if (!path || !Array.isArray(path)) {
-      return NextResponse.json(
-        { error: '잘못된 경로 요청입니다.' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: '잘못된 경로 요청입니다.' }, { status: 400 });
     }
 
     const subPath = path.join('/');
@@ -38,8 +35,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         errorMessage = errorData.message || errorMessage;
       } else {
         const errorText = await res.text();
-        errorMessage =
-          errorText || `서버 오류가 발생했습니다. (Status: ${res.status})`;
+        errorMessage = errorText || `서버 오류가 발생했습니다. (Status: ${res.status})`;
       }
 
       return NextResponse.json({ error: errorMessage }, { status: res.status });
@@ -58,9 +54,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     return response;
   } catch (error) {
     console.error('Auth Proxy Error:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

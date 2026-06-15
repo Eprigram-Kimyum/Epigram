@@ -31,8 +31,7 @@ export default function LoginPage() {
       router.refresh();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        const serverMessage =
-          error.response.data?.error || error.response.data?.message || '';
+        const serverMessage = error.response.data?.error || error.response.data?.message || '';
 
         if (serverMessage.includes('이메일')) {
           setError('email', { type: 'server', message: serverMessage });
@@ -80,12 +79,7 @@ export default function LoginPage() {
           })}
         />
 
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          aria-busy={isSubmitting}
-          aria-live="polite"
-        >
+        <Button type="submit" disabled={isSubmitting} aria-busy={isSubmitting} aria-live="polite">
           {isSubmitting ? '로그인 중...' : '로그인'}
         </Button>
       </form>

@@ -5,7 +5,7 @@ export const getAccessToken = (): string | null => {
     return null;
   }
 
-    return localStorage.getItem(ACCESS_TOKEN_KEY);
+  return localStorage.getItem(ACCESS_TOKEN_KEY);
 };
 
 export const setAccessToken = (accessToken: string) => {
@@ -16,8 +16,8 @@ export const setAccessToken = (accessToken: string) => {
 };
 
 export const removeAccessToken = () => {
-    if (typeof window === 'undefined') {
-        return;
-    }
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
+  if (typeof window === 'undefined') {
+    return;
+  }
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
 };
