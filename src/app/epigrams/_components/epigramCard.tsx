@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Epigram } from '@/apis/epigram/type';
+import { Epigram } from '@/app/apis/epigram/type';
 
 interface EpigramCardProps {
   epigram: Epigram;

@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 const config: AxiosRequestConfig = {
-  baseURL: '/api',
+  baseURL: '/apis',
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',

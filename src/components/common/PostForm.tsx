@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Input } from './Input';
 import { TextArea } from './TextArea';
-import { createEpigram } from '@/apis/epigram/epigram';
-import { CreateEpigramRequest, ApiErrorResponse } from '@/apis/epigram/type';
+import { createEpigram } from '@/app/apis/epigram/epigram';
+import { CreateEpigramRequest, ApiErrorResponse } from '@/app/apis/epigram/type';
 
 interface EpigramFormData {
   content: string;

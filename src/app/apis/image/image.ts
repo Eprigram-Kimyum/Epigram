@@ -1,4 +1,4 @@
-import instance from '@/apis/instance';
+import instance from '@/app/apis/instance';
 import { UploadImageParams, UploadImageResponse } from './type';
 
 export const uploadImage = async ({
