@@ -44,16 +44,37 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const data = await res.json();
     const response = NextResponse.json(data);
 
-    const cookieHeaders = res.headers.getSetCookie();
-    if (cookieHeaders.length > 0) {
-      cookieHeaders.forEach((cookie) => {
-        response.headers.append('set-cookie', cookie);
+    if ((subPath === 'signIn' || subPath === 'signUp') && data.accessToken && data.refreshToken) {
+      response.cookies.set('accessToken', data.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 60 * 60 * 24, // 1일
+      });
+
+      response.cookies.set('refreshToken', data.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7, // 7일
+      });
+    }
+
+    if (subPath === 'refresh-token' && data.accessToken) {
+      response.cookies.set('accessToken', data.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 60 * 60 * 24, // 1일
       });
     }
 
     return response;
   } catch (error) {
-    console.error('Auth Proxy Error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('인증 라우트 핸들러 에러:', error);
+    return NextResponse.json({ error: '서버 내부 오류가 발생했습니다.' }, { status: 500 });
   }
 }

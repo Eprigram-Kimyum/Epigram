@@ -1,5 +1,13 @@
+// auth.ts
 import axios from 'axios';
-import { SignUpRequest, SignUpResponse, LoginRequest, LoginResponse } from './type';
+import {
+  SignUpRequest,
+  SignUpResponse,
+  LoginRequest,
+  LoginResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+} from './type';
 
 const authInstance = axios.create({
   baseURL: '/api/auth',
@@ -13,6 +21,14 @@ export const registerUser = async (signUpData: SignUpRequest): Promise<SignUpRes
 
 // 로그인 API
 export const loginUser = async (loginData: LoginRequest): Promise<LoginResponse> => {
-  const response = await authInstance.post('/signIn', loginData);
-  return response.data as LoginResponse;
+  const response = await authInstance.post<LoginResponse>('/signIn', loginData);
+  return response.data;
+};
+
+// 토큰 갱신 API
+export const refreshTokens = async (
+  refreshData: RefreshTokenRequest,
+): Promise<RefreshTokenResponse> => {
+  const response = await authInstance.post<RefreshTokenResponse>('/refresh-token', refreshData);
+  return response.data;
 };
