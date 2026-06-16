@@ -1,3 +1,5 @@
+// type.ts
+
 export interface UserInfo {
   id: number;
   email: string;
@@ -30,4 +32,12 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   user: UserInfo;
+}
+
+export interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string;
 }

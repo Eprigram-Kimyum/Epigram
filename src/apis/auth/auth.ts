@@ -1,18 +1,11 @@
-import axios from 'axios';
-import { SignUpRequest, SignUpResponse, LoginRequest, LoginResponse } from './type';
+import instance from '../instance';
+import { LoginRequest, LoginResponse, SignUpRequest, SignUpResponse } from './type';
 
-const authInstance = axios.create({
-  baseURL: '/api/auth',
-});
-
-// 회원가입 API
-export const registerUser = async (signUpData: SignUpRequest): Promise<SignUpResponse> => {
-  const response = await authInstance.post<SignUpResponse>('/signUp', signUpData);
-  return response.data;
+export const loginUser = async (payload: LoginRequest): Promise<LoginResponse> => {
+  return instance.post('/auth/signin', payload);
 };
 
-// 로그인 API
-export const loginUser = async (loginData: LoginRequest): Promise<LoginResponse> => {
-  const response = await authInstance.post('/signIn', loginData);
-  return response.data as LoginResponse;
+/* 회원가입 요청 API 함수 */
+export const registerUser = async (payload: SignUpRequest) => {
+  return instance.post('/auth/signup', payload);
 };

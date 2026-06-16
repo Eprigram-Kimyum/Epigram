@@ -3,9 +3,9 @@
 import toast from 'react-hot-toast';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { SignUpRequest } from '../../apis/auth/type';
-import { registerUser } from '../../apis/auth/auth';
-import { Input } from '../../components/common/Input';
+import { SignUpRequest } from '@/apis/auth/type';
+import { registerUser } from '@/apis/auth/auth';
+import { Input } from '@/components/common/Input';
 import axios from 'axios';
 
 interface SignUpFormInput extends SignUpRequest {
@@ -36,6 +36,7 @@ export default function SignUpPage() {
     try {
       await registerUser(payload);
 
+      console.log('회원가입이 성공적으로 완료되었습니다.');
       toast.success('회원가입이 완료되었습니다.');
 
       router.replace('/login');

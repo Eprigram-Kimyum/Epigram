@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Input } from './Input';
 import { TextArea } from './TextArea';
-import { createEpigram } from '../../apis/epigram/epigram';
-import { CreateEpigramRequest, ApiErrorResponse } from '../../apis/epigram/type';
+import { createEpigram } from '@/apis/epigram/epigram';
+import { CreateEpigramRequest, ApiErrorResponse } from '@/apis/epigram/type';
 
 interface EpigramFormData {
   content: string;
@@ -72,11 +72,28 @@ export function PostForm() {
 
   // 3. 비동기 데이터 제출 핸들러 (괄호 범위 정상화)
   const onSubmit = async (data: EpigramFormData) => {
+    // 백엔드가 명확히 인지할 수 있는 형태로 저자(author) 데이터를 정제합니다.
+    let resolvedAuthor = '';
+
+    if (data.authorType === '직접 입력') {
+      resolvedAuthor = data.author.trim();
+    } else if (data.authorType === '본인') {
+      resolvedAuthor = '본인'; // 백엔드 명세에 따라 사용자 이름 또는 '본인' 지정
+    } else {
+      resolvedAuthor = '알 수 없음';
+    }
+
+    // 데이터 공백 검증 및 안전장치
+    if (!resolvedAuthor) {
+      console.warn('저자 정보가 올바르지 않습니다.');
+      return;
+    }
+
     const submissionData: CreateEpigramRequest = {
       content: data.content,
-      author: data.authorType === '직접 입력' ? data.author : data.authorType,
-      referenceTitle: data.referenceTitle || undefined,
-      referenceUrl: data.referenceUrl || undefined,
+      author: resolvedAuthor, // 정제된 저자 이름 전달 ("직접 입력" 문자열 전송 방지)
+      referenceTitle: data.referenceTitle?.trim() || undefined,
+      referenceUrl: data.referenceUrl?.trim() || undefined,
       tags,
     };
 
@@ -86,18 +103,11 @@ export function PostForm() {
       alert('에피그램이 성공적으로 등록되었습니다!');
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        if (error.response && error.response.status === 401) {
-          const errorData = error.response.data as ApiErrorResponse;
-          alert(`인증 오류: ${errorData.message || '로그인이 필요한 서비스입니다.'}`);
-        } else {
-          console.error('에피그램 등록 실패:', error);
-          alert('에피그램 등록 중 오류가 발생했습니다.');
-        }
+        console.error('에피그램 등록 실패 (서버 에러):', error.response?.data || error.message);
       }
     }
-  }; // 👈 onSubmit 비동기 함수가 여기서 명확하게 끝납니다!
+  };
 
-  // 4. 🔥 PostForm 컴포넌트 고유의 화면 렌더링 영역
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <TextArea
@@ -163,9 +173,9 @@ export function PostForm() {
         />
       </fieldset>
 
-      <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+      <fieldset>
         <legend>태그</legend>
-        <div style={{ display: 'flex', gap: '5px', marginBottom: '5px' }}>
+        <div>
           {tags.map((tag, index) => (
             <button
               type="button"

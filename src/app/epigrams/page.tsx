@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-
-import { getEpigramsApi } from '../../apis/epigram/epigram';
-import { Epigram } from '../../apis/epigram/type';
+import { getEpigramsApi } from '@/apis/epigram/epigram';
+import { Epigram } from '@/apis/epigram/type';
+import EpigramCard from './_components/epigramCard';
 
 export default function EpigramsPage() {
   const [epigrams, setEpigrams] = useState<Epigram[]>([]);
@@ -13,7 +13,6 @@ export default function EpigramsPage() {
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
   const observerRef = useRef<IntersectionObserver | null>(null);
-
   const stateRef = useRef({ nextCursor, isLoading, isInitialLoad });
   stateRef.current = { nextCursor, isLoading, isInitialLoad };
 
@@ -23,7 +22,7 @@ export default function EpigramsPage() {
 
     try {
       const currentLimit = cursorValue === null ? 6 : 4;
-      const data = await getEpigramsApi(cursorValue, currentLimit);
+      const data = await getEpigramsApi({ cursor: cursorValue, limit: currentLimit });
 
       setEpigrams((prev) => [...prev, ...data.list]);
       setNextCursor(data.nextCursor);
@@ -68,25 +67,19 @@ export default function EpigramsPage() {
 
   return (
     <main>
+      <div>
+        <h2>에피그램 피드</h2>
+        <Link href="/add-epigram">
+          <button type="button">에피그램 만들기</button>
+        </Link>
+      </div>
+
       {isInitialLoad && isLoading ? (
         <p>로딩 중...</p>
       ) : (
         <section>
           {epigrams.map((epigram) => (
-            <Link
-              href={`/epigrams/${epigram.id}`}
-              key={epigram.id}
-              aria-label={`${epigram.author || '익명'}의 명언 상세보기: "${epigram.content}"`}
-            >
-              <figure>
-                <blockquote>
-                  <p>"{epigram.content}"</p>
-                </blockquote>
-                <figcaption>
-                  — <cite>{epigram.author || '익명'}</cite>
-                </figcaption>
-              </figure>
-            </Link>
+            <EpigramCard key={epigram.id} epigram={epigram} />
           ))}
         </section>
       )}
