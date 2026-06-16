@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import Link from 'next/link';
-
 import { getEpigramsApi } from '../../apis/epigram/epigram';
 import { Epigram } from '../../apis/epigram/type';
+import EpigramCard from './_components/epigramCard';
 
 export default function EpigramsPage() {
   const [epigrams, setEpigrams] = useState<Epigram[]>([]);
@@ -13,7 +12,6 @@ export default function EpigramsPage() {
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
   const observerRef = useRef<IntersectionObserver | null>(null);
-
   const stateRef = useRef({ nextCursor, isLoading, isInitialLoad });
   stateRef.current = { nextCursor, isLoading, isInitialLoad };
 
@@ -73,20 +71,7 @@ export default function EpigramsPage() {
       ) : (
         <section>
           {epigrams.map((epigram) => (
-            <Link
-              href={`/epigrams/${epigram.id}`}
-              key={epigram.id}
-              aria-label={`${epigram.author || '익명'}의 명언 상세보기: "${epigram.content}"`}
-            >
-              <figure>
-                <blockquote>
-                  <p>"{epigram.content}"</p>
-                </blockquote>
-                <figcaption>
-                  — <cite>{epigram.author || '익명'}</cite>
-                </figcaption>
-              </figure>
-            </Link>
+            <EpigramCard key={epigram.id} epigram={epigram} />
           ))}
         </section>
       )}
