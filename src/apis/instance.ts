@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { getAccessToken, removeAccessToken } from '../utils/authTokenStorage';
+import { getAccessToken, removeAccessToken } from '@/utils/authTokenStorage';
 
 const ERROR_MESSAGES = {
   network: '네트워크 연결이 원활하지 않습니다.',
