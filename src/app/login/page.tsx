@@ -3,6 +3,7 @@
 import toast from 'react-hot-toast';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { LoginRequest } from '@/apis/auth/type';
 import { loginUser } from '@/apis/auth/auth';
 import { Input } from '@/components/common/Input';
@@ -27,7 +28,7 @@ export default function LoginPage() {
 
       toast.success('로그인에 성공했습니다.');
 
-      router.push('/');
+      router.push('/epigrams');
       router.refresh();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -79,10 +80,17 @@ export default function LoginPage() {
           })}
         />
 
-        <Button type="submit" disabled={isSubmitting} aria-busy={isSubmitting} aria-live="polite">
+        <Button type="submit" disabled={isSubmitting} aria-busy={isSubmitting}>
           {isSubmitting ? '로그인 중...' : '로그인'}
         </Button>
       </form>
+
+      <div>
+        <span>계정이 없으신가요?</span>
+        <Link href="/signup" className="button-style">
+          회원가입
+        </Link>
+      </div>
     </main>
   );
 }

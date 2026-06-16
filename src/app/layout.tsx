@@ -1,18 +1,22 @@
-import type { Metadata } from 'next';
-import '@/styles/globals.css';
-import { Toaster } from 'react-hot-toast';
+import React from 'react';
+import Header from '@/components/common/Header/Header';
 
-export const metadata: Metadata = {
-  title: 'Epigram23-6',
-  description: '23기 프론트엔드 스프린트 심화 프로젝트',
+export const metadata = {
+  title: 'Epigrams',
+  description: '나만의 에피그램을 공유하는 공간',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+interface RootLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="ko" className="h-full antialiased">
-      <body className="font-main min-h-full flex flex-col">
-        {children}
-        <Toaster position="top-center" reverseOrder={false} />
+    <html lang="ko">
+      <body>
+        <Header />
+
+        <main>{children}</main>
       </body>
     </html>
   );
