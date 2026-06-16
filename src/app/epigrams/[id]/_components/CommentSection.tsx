@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef, useCallback, ChangeEvent } from 'react';
 import { TextArea } from '@/components/common/TextArea';
 import Button from '@/components/common/Button';
-import { getCommentsApi, createCommentApi, updateCommentApi } from '@/apis/comment/comment';
-import { CommentItemType } from '@/apis/comment/type';
+import { getCommentsApi, createCommentApi, updateCommentApi } from '@/app/apis/comment/comment';
+import { CommentItemType } from '@/app/apis/comment/type';
 import CommentItem from './CommentItem';
 
 interface CommentSectionProps {

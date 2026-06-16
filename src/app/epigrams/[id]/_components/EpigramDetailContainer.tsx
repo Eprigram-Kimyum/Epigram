@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/common/Modal';
 import Dropdown from '@/components/common/Dropdown';
-import { deleteEpigramApi, likeEpigramApi, unlikeEpigramApi } from '@/apis/epigram/epigram';
-import { EpigramDetail } from '@/apis/epigram/type';
+import { deleteEpigramApi, likeEpigramApi, unlikeEpigramApi } from '@/app/apis/epigram/epigram';
+import { EpigramDetail } from '@/app/apis/epigram/type';
 import toast from 'react-hot-toast';
 
 interface EpigramDetailContainerProps {

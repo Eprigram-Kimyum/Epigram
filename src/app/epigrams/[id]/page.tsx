@@ -2,9 +2,9 @@
 
 import { useEffect, useState, use } from 'react';
 import Header from '@/components/layout/Header';
-import instance from '@/apis/instance'; // 💡 기존 Axios 인스턴스 사용
-import { getEpigramDetailApi } from '@/apis/epigram/epigram';
-import { EpigramDetail } from '@/apis/epigram/type';
+import instance from '@/app/apis/instance'; // 💡 기존 Axios 인스턴스 사용
+import { getEpigramDetailApi } from '@/app/apis/epigram/epigram';
+import { EpigramDetail } from '@/app/apis/epigram/type';
 import EpigramDetailContainer from './_components/EpigramDetailContainer';
 import CommentSection from './_components/CommentSection';
 

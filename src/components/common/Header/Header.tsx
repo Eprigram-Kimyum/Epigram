@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getUserMeApi } from '@/apis/user/user';
-import { UserResponse } from '@/apis/user/type';
+import { getUserMeApi } from '@/app/apis/user/user';
+import { UserResponse } from '@/app/apis/user/type';
 import Logo from './Logo';
 import Navigation from './Navigation';
 import UserProfile from './UserProfile';

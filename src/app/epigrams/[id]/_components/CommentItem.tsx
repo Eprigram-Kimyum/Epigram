@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Modal from '@/components/common/Modal';
 import Dropdown from '@/components/common/Dropdown';
-import { deleteCommentApi } from '@/apis/comment/comment';
-import { CommentItemType } from '@/apis/comment/type';
+import { deleteCommentApi } from '@/app/apis/comment/comment';
+import { CommentItemType } from '@/app/apis/comment/type';
 import { formatCommentDate } from '@/utils/date';
 
 interface CommentItemProps {

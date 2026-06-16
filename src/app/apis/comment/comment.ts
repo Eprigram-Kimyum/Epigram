@@ -1,4 +1,4 @@
-import instance from '@/apis/instance';
+import instance from '@/app/apis/instance';
 import {
   CommentListResponse,
   CommentItemType,
@@ -7,7 +7,7 @@ import {
   DeleteCommentResponse,
 } from './type';
 
-// 댓글 목록 조회 (커서 기반 무한 스크롤)
+// 댓글 목록 조회
 export const getCommentsApi = async (
   epigramId: number,
   cursor: number | null = null,
