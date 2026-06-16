@@ -3,7 +3,12 @@
 import { useState, useEffect, useRef, useCallback, ChangeEvent } from 'react';
 import { TextArea } from '@/components/common/TextArea';
 import Button from '@/components/common/Button';
-import { getCommentsApi, createCommentApi, updateCommentApi } from '@/apis/comment/comment';
+import {
+  getCommentsApi,
+  createCommentApi,
+  updateCommentApi,
+  deleteCommentApi,
+} from '@/apis/comment/comment';
 import { CommentItemType } from '@/apis/comment/type';
 import CommentItem from './CommentItem';
 
@@ -70,18 +75,21 @@ export default function CommentSection({ epigramId, currentUserId }: CommentSect
     }
   }, []);
 
+  // ① 불필요한 재요청 방지: 신규 댓글 작성 시 로컬 상태 맨 앞에 추가
   const handleCreateSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!mainCommentContent.trim() || mainCommentContent.length > 100) return;
 
     try {
-      await createCommentApi({
+      const newComment = await createCommentApi({
         epigramId: numericEpigramId,
         content: mainCommentContent,
         isPrivate: false,
       });
+
+      // 처음부터 다시 부르지 않고, 서버에서 받은 새 객체를 로컬 배열에만 결합
+      setComments((prev) => [newComment, ...prev]);
       setMainCommentContent('');
-      await fetchComments(null, true);
     } catch (error) {
       console.error('댓글 등록 실패:', error);
     }
@@ -92,25 +100,29 @@ export default function CommentSection({ epigramId, currentUserId }: CommentSect
     setEditCommentContent(currentContent);
   };
 
+  // ② 불필요한 재요청 방지: 댓글 수정 시 해당 아이템만 로컬 맵핑으로 교체
   const handleUpdateSubmit = async (event: React.FormEvent, commentId: number) => {
     event.preventDefault();
     if (!editCommentContent.trim() || editCommentContent.length > 100) return;
 
     try {
-      await updateCommentApi(commentId, {
+      const updatedComment = await updateCommentApi(commentId, {
         content: editCommentContent,
         isPrivate: false,
       });
+
+      // 단일 아이템 상태만 타겟팅 수정
+      setComments((prev) => prev.map((c) => (c.id === commentId ? updatedComment : c)));
       setEditingCommentId(null);
       setEditCommentContent('');
-      await fetchComments(null, true);
     } catch (error) {
       console.error('댓글 수정 실패:', error);
     }
   };
 
-  const handleDeleteSuccess = () => {
-    fetchComments(null, true);
+  // ③ 불필요한 재요청 방지: 댓글 삭제 시 필터링 처리
+  const handleDeleteSuccess = (deletedCommentId: number) => {
+    setComments((prev) => prev.filter((c) => c.id !== deletedCommentId));
   };
 
   return (

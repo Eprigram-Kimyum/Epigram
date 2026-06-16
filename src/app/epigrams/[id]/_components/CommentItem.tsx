@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useState } from 'react';
 import Modal from '@/components/common/Modal';
 import Dropdown from '@/components/common/Dropdown';
 import { deleteCommentApi } from '@/apis/comment/comment';
@@ -10,8 +10,13 @@ interface CommentItemProps {
   comment: CommentItemType;
   currentUserId: number | null;
   onStartEdit: (commentId: number, currentContent: string) => void;
-  onDeleteSuccess: () => void;
+  onDeleteSuccess: (commentId: number) => void;
 }
+
+const formatCommentDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('ko-KR');
+};
 
 export default function CommentItem({
   comment,
@@ -28,21 +33,9 @@ export default function CommentItem({
     try {
       await deleteCommentApi(comment.id);
       setIsDeleteModalOpen(false);
-      onDeleteSuccess();
+      onDeleteSuccess(comment.id);
     } catch (error) {
       console.error('댓글 삭제 중 오류 발생:', error);
-    }
-  };
-
-  const formatCommentDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR');
-  };
-
-  const handleProfileKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      setIsProfileModalOpen(true);
     }
   };
 
@@ -63,19 +56,14 @@ export default function CommentItem({
 
   return (
     <div>
-      <div
-        onClick={() => setIsProfileModalOpen(true)}
-        onKeyDown={handleProfileKeyDown}
-        role="button"
-        tabIndex={0}
-      >
+      <button type="button" onClick={() => setIsProfileModalOpen(true)}>
         {comment.writer.image ? (
-          <img src={comment.writer.image} alt={`${comment.writer.nickname}의 프로필`} />
+          <img src={comment.writer.image} alt={`${comment.writer.nickname} 프로필 사진`} />
         ) : (
           <div>{comment.writer.nickname[0]}</div>
         )}
         <strong>{comment.writer.nickname}</strong>
-      </div>
+      </button>
 
       <div>
         <p>{comment.content}</p>
@@ -92,7 +80,9 @@ export default function CommentItem({
         title="프로필 정보"
       >
         <div>
-          {comment.writer.image && <img src={comment.writer.image} alt="프로필" />}
+          {comment.writer.image && (
+            <img src={comment.writer.image} alt={`${comment.writer.nickname} 프로필 사진 상세`} />
+          )}
           <h3>{comment.writer.nickname}</h3>
           <p>유저 ID: {comment.writer.id}</p>
         </div>
