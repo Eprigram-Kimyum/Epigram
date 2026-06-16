@@ -1,5 +1,3 @@
-// type.ts
-
 export interface UserInfo {
   id: number;
   email: string;

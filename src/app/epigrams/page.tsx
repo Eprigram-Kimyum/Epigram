@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { getEpigramsApi } from '@/apis/epigram/epigram';
-import { Epigram } from '@/apis/epigram/type';
+import { getEpigramsApi } from '@/app/apis/epigram/epigram';
+import { Epigram } from '@/app/apis/epigram/type';
 import EpigramCard from './_components/epigramCard';
 
 export default function EpigramsPage() {

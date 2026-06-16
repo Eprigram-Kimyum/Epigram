@@ -3,8 +3,8 @@
 import toast from 'react-hot-toast';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { SignUpRequest } from '@/apis/auth/type';
-import { registerUser } from '@/apis/auth/auth';
+import { SignUpRequest } from '@/app/apis/auth/type';
+import { registerUser } from '@/app/apis/auth/auth';
 import { Input } from '@/components/common/Input';
 import axios from 'axios';
 
