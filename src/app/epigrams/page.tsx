@@ -2,21 +2,22 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 import { getEpigramsApi } from '../../apis/epigram/epigram';
 import { Epigram } from '../../apis/epigram/type';
 import { toast } from 'react-hot-toast';
 
 export default function EpigramsPage() {
-  const router = useRouter();
-
   const [epigrams, setEpigrams] = useState<Epigram[]>([]);
   const [nextCursor, setNextCursor] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
   const bottomTriggerRef = useRef<HTMLDivElement | null>(null);
+
+  const stateRef = useRef({ nextCursor, isLoading, isInitialLoad });
+
+  stateRef.current = { nextCursor, isLoading, isInitialLoad };
 
   const fetchEpigrams = async (cursorValue: number | null) => {
     if (isLoading) return;
@@ -41,28 +42,31 @@ export default function EpigramsPage() {
     fetchEpigrams(null);
   }, []);
 
+  // 💡 2-① 리뷰 반영: 의존성 배열을 비워 Observer 재생성 방지 최적화
   useEffect(() => {
-    if (isInitialLoad || nextCursor === null) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isLoading) {
+        // Ref에서 언제나 '가장 최신의' 상태값을 꺼내와서 확인
+        const { nextCursor, isLoading, isInitialLoad } = stateRef.current;
+
+        if (entries[0].isIntersecting && !isLoading && !isInitialLoad && nextCursor !== null) {
           fetchEpigrams(nextCursor);
         }
       },
       { threshold: 0.1 },
     );
 
-    if (bottomTriggerRef.current) {
-      observer.observe(bottomTriggerRef.current);
+    const currentTrigger = bottomTriggerRef.current;
+    if (currentTrigger) {
+      observer.observe(currentTrigger);
     }
 
     return () => {
-      if (bottomTriggerRef.current) {
-        observer.unobserve(bottomTriggerRef.current);
+      if (currentTrigger) {
+        observer.unobserve(currentTrigger);
       }
     };
-  }, [nextCursor, isLoading, isInitialLoad]);
+  }, []);
 
   return (
     <main>
@@ -72,10 +76,14 @@ export default function EpigramsPage() {
         <section>
           {epigrams.map((epigram) => (
             <Link href={`/epigrams/${epigram.id}`} key={epigram.id}>
-              <blockquote>
-                <p>"{epigram.content}"</p>
-              </blockquote>
-              <cite>— {epigram.author || '익명'}</cite>
+              <figure>
+                <blockquote>
+                  <p>"{epigram.content}"</p>
+                </blockquote>
+                <figcaption>
+                  — <cite>{epigram.author || '익명'}</cite>
+                </figcaption>
+              </figure>
 
               {epigram.tags && epigram.tags.length > 0 && (
                 <div>
