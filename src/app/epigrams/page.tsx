@@ -1,16 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import { getEpigramsApi } from '../../apis/epigram/epigram';
 import { Epigram } from '../../apis/epigram/type';
-import { toast } from 'react-hot-toast';
 
 export default function EpigramsPage() {
-  const router = useRouter();
-
   const [epigrams, setEpigrams] = useState<Epigram[]>([]);
   const [nextCursor, setNextCursor] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -32,7 +28,7 @@ export default function EpigramsPage() {
       setEpigrams((prev) => [...prev, ...data.list]);
       setNextCursor(data.nextCursor);
     } catch (error) {
-      toast.error('데이터를 불러오는 중 에러가 발생했습니다.');
+      console.error('에피그램을 불러오는 중 오류 발생:', error);
     } finally {
       setIsLoading(false);
       setIsInitialLoad(false);
@@ -44,17 +40,24 @@ export default function EpigramsPage() {
   }, []);
 
   const bottomTriggerRef = useCallback((node: HTMLDivElement | null) => {
-    if (observerRef.current) observerRef.current.disconnect();
-
-    if (stateRef.current.nextCursor === null && !stateRef.current.isInitialLoad) return;
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+      observerRef.current = null;
+    }
 
     if (node) {
       observerRef.current = new IntersectionObserver(
         (entries) => {
-          const { nextCursor, isLoading, isInitialLoad } = stateRef.current;
+          const {
+            nextCursor: latestCursor,
+            isLoading: latestLoading,
+            isInitialLoad: latestInitial,
+          } = stateRef.current;
 
-          if (entries[0].isIntersecting && !isLoading && !isInitialLoad && nextCursor !== null) {
-            fetchEpigrams(nextCursor);
+          if (entries[0].isIntersecting && !latestLoading && !latestInitial) {
+            if (latestCursor !== null) {
+              fetchEpigrams(latestCursor);
+            }
           }
         },
         { threshold: 0.1 },
@@ -65,15 +68,15 @@ export default function EpigramsPage() {
 
   return (
     <main>
-      {epigrams.length === 0 && !isLoading ? (
-        <div>등록된 에피그램이 없습니다.</div>
+      {isInitialLoad && isLoading ? (
+        <p>로딩 중...</p>
       ) : (
         <section>
           {epigrams.map((epigram) => (
             <Link
               href={`/epigrams/${epigram.id}`}
               key={epigram.id}
-              style={{ display: 'block', margin: '10px 0' }}
+              aria-label={`${epigram.author || '익명'}의 명언 상세보기: "${epigram.content}"`}
             >
               <figure>
                 <blockquote>
@@ -88,7 +91,9 @@ export default function EpigramsPage() {
         </section>
       )}
 
-      {nextCursor !== null && <div ref={bottomTriggerRef}>{isLoading && <p>로딩 중...</p>}</div>}
+      {nextCursor !== null && (
+        <div ref={bottomTriggerRef}>{isLoading && <p>추가 데이터 로딩 중...</p>}</div>
+      )}
     </main>
   );
 }
