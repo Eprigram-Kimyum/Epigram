@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { getEpigramsApi } from '../../apis/epigram/epigram';
-import { Epigram } from '../../apis/epigram/type';
+import { getEpigramsApi } from '@/apis/epigram/epigram';
+import { Epigram } from '@/apis/epigram/type';
 import EpigramCard from './_components/epigramCard';
 
 export default function EpigramsPage() {
@@ -21,7 +21,7 @@ export default function EpigramsPage() {
 
     try {
       const currentLimit = cursorValue === null ? 6 : 4;
-      const data = await getEpigramsApi(cursorValue, currentLimit);
+      const data = await getEpigramsApi({ cursor: cursorValue, limit: currentLimit });
 
       setEpigrams((prev) => [...prev, ...data.list]);
       setNextCursor(data.nextCursor);

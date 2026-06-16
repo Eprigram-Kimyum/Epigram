@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, ReactNode } from 'react';
-import useOutsideClick from '../../hooks/useOutsideClick';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface DropdownItem {
   label: string;
