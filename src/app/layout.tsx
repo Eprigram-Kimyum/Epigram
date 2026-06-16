@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import './styles/globals.css';
+import '../styles/globals.css';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
@@ -7,11 +7,7 @@ export const metadata: Metadata = {
   description: '23기 프론트엔드 스프린트 심화 프로젝트',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" className="h-full antialiased">
       <body className="font-main min-h-full flex flex-col">

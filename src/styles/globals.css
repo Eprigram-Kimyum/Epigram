@@ -4,11 +4,11 @@
 
 @theme {
   --font-main:
-    'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto,
-    'Helvetica Neue', Arial, sans-serif;
+    'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
   --font-sub:
-    'Iropke Batang OTF', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕',
-    Helvetica, Arial, sans-serif;
+    'Iropke Batang OTF', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', Helvetica, Arial,
+    sans-serif;
 
   --color-black-100: #f9f9f9;
   --color-black-200: #6b6b6b;
