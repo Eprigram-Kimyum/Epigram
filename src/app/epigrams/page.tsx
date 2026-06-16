@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import Link from 'next/link';
 import { getEpigramsApi } from '@/apis/epigram/epigram';
 import { Epigram } from '@/apis/epigram/type';
 import EpigramCard from './_components/epigramCard';
@@ -66,6 +67,13 @@ export default function EpigramsPage() {
 
   return (
     <main>
+      <div>
+        <h2>에피그램 피드</h2>
+        <Link href="/add-epigram">
+          <button type="button">에피그램 만들기</button>
+        </Link>
+      </div>
+
       {isInitialLoad && isLoading ? (
         <p>로딩 중...</p>
       ) : (

@@ -1,34 +1,12 @@
-// auth.ts
-import axios from 'axios';
-import {
-  SignUpRequest,
-  SignUpResponse,
-  LoginRequest,
-  LoginResponse,
-  RefreshTokenRequest,
-  RefreshTokenResponse,
-} from './type';
+import instance from '../instance';
+import { LoginRequest, SignUpRequest } from './type';
 
-const authInstance = axios.create({
-  baseURL: '/api/auth',
-});
-
-// 회원가입 API
-export const registerUser = async (signUpData: SignUpRequest): Promise<SignUpResponse> => {
-  const response = await authInstance.post<SignUpResponse>('/signUp', signUpData);
-  return response.data;
+/* 로그인 요청 API 함수 */
+export const loginUser = async (payload: LoginRequest) => {
+  return instance.post('/auth/signin', payload);
 };
 
-// 로그인 API
-export const loginUser = async (loginData: LoginRequest): Promise<LoginResponse> => {
-  const response = await authInstance.post<LoginResponse>('/signIn', loginData);
-  return response.data;
-};
-
-// 토큰 갱신 API
-export const refreshTokens = async (
-  refreshData: RefreshTokenRequest,
-): Promise<RefreshTokenResponse> => {
-  const response = await authInstance.post<RefreshTokenResponse>('/refresh-token', refreshData);
-  return response.data;
+/* 회원가입 요청 API 함수 */
+export const registerUser = async (payload: SignUpRequest) => {
+  return instance.post('/auth/signup', payload);
 };

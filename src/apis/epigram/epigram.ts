@@ -1,4 +1,4 @@
-import instance from '@/apis/instance';
+import instance from '../instance';
 
 import {
   GetEpigramsQueryParams,
@@ -15,7 +15,6 @@ export const getEpigramsApi = async (
 ): Promise<GetEpigramsResponse> => {
   const { limit = 4, cursor = null, keyword, writerId } = params;
 
-  // 💡 끝에 'as unknown as GetEpigramsResponse'를 붙여 컴파일러의 오해를 풀어줍니다.
   return instance.get('/epigrams', {
     params: {
       limit,
@@ -27,8 +26,9 @@ export const getEpigramsApi = async (
 };
 
 // 에피그램 등록
-export const createEpigram = async (payload: CreateEpigramRequest): Promise<EpigramDetail> => {
-  return instance.post('/epigrams', payload) as unknown as EpigramDetail;
+export const createEpigram = async (payload: CreateEpigramRequest) => {
+  const response = await instance.post('/epigrams', payload);
+  return response;
 };
 
 // 에피그램 상세 조회

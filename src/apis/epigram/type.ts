@@ -82,3 +82,9 @@ export interface GetCommentsResponse {
   nextCursor: number | null;
   list: EpigramComment[];
 }
+
+export interface ApiErrorResponse {
+  message?: string;
+  error?: string;
+  statusCode?: number;
+}

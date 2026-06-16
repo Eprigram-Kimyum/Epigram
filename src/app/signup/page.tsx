@@ -36,6 +36,7 @@ export default function SignUpPage() {
     try {
       await registerUser(payload);
 
+      console.log('회원가입이 성공적으로 완료되었습니다.');
       toast.success('회원가입이 완료되었습니다.');
 
       router.replace('/login');
