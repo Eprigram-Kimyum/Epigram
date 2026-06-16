@@ -87,10 +87,8 @@ export default function LoginPage() {
 
       <div>
         <span>계정이 없으신가요?</span>
-        <Link href="/signup">
-          <button type="button" disabled={isSubmitting}>
-            회원가입
-          </button>
+        <Link href="/signup" className="button-style">
+          회원가입
         </Link>
       </div>
     </main>

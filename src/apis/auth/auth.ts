@@ -1,8 +1,7 @@
 import instance from '../instance';
-import { LoginRequest, SignUpRequest } from './type';
+import { LoginRequest, LoginResponse, SignUpRequest, SignUpResponse } from './type';
 
-/* 로그인 요청 API 함수 */
-export const loginUser = async (payload: LoginRequest) => {
+export const loginUser = async (payload: LoginRequest): Promise<LoginResponse> => {
   return instance.post('/auth/signin', payload);
 };
 
