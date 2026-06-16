@@ -6,6 +6,13 @@ import Dropdown from '@/components/common/Dropdown';
 import { deleteCommentApi } from '@/apis/comment/comment';
 import { CommentItemType } from '@/apis/comment/type';
 
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
+dayjs.locale('ko');
+
 interface CommentItemProps {
   comment: CommentItemType;
   currentUserId: number | null;
@@ -14,8 +21,14 @@ interface CommentItemProps {
 }
 
 const formatCommentDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('ko-KR');
+  const now = dayjs();
+  const commentDate = dayjs(dateString);
+
+  if (now.diff(commentDate, 'hour') < 24) {
+    return commentDate.fromNow();
+  }
+
+  return commentDate.format('YYYY. MM. DD');
 };
 
 export default function CommentItem({
@@ -56,7 +69,17 @@ export default function CommentItem({
 
   return (
     <div>
-      <button type="button" onClick={() => setIsProfileModalOpen(true)}>
+      <button
+        type="button"
+        onClick={() => setIsProfileModalOpen(true)}
+        style={{
+          background: 'none',
+          border: 'none',
+          padding: 0,
+          cursor: 'pointer',
+          textAlign: 'left',
+        }}
+      >
         {comment.writer.image ? (
           <img src={comment.writer.image} alt={`${comment.writer.nickname} 프로필 사진`} />
         ) : (
