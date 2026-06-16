@@ -1,4 +1,5 @@
 import React, { useState, KeyboardEvent } from 'react';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Input } from './Input';
 import { TextArea } from './TextArea';
@@ -18,7 +19,6 @@ export function PostForm() {
     register,
     handleSubmit,
     watch,
-    trigger,
     formState: { errors },
   } = useForm<EpigramFormData>({
     mode: 'onBlur',
@@ -37,6 +37,7 @@ export function PostForm() {
 
   const currentAuthorType = watch('authorType');
 
+  // 1. 태그 입력 핸들러
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === '#' || e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -46,7 +47,6 @@ export function PostForm() {
       if (!trimmedTag) return;
 
       if (tags.length >= 3) {
-        setTags(tags);
         setTagError('태그는 최대 3개까지만 등록할 수 있습니다.');
         return;
       }
@@ -64,11 +64,13 @@ export function PostForm() {
     }
   };
 
+  // 2. 태그 삭제 핸들러
   const removeTag = (indexToRemove: number) => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
     setTagError('');
   };
 
+  // 3. 비동기 데이터 제출 핸들러 (괄호 범위 정상화)
   const onSubmit = async (data: EpigramFormData) => {
     const submissionData: CreateEpigramRequest = {
       content: data.content,
@@ -82,23 +84,22 @@ export function PostForm() {
       const result = await createEpigram(submissionData);
       console.log('서버 응답 결과:', result);
       alert('에피그램이 성공적으로 등록되었습니다!');
-    } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        const errorData = error.response.data as ApiErrorResponse;
-        alert(`인증 오류: ${errorData.message || '로그인이 필요한 서비스입니다.'}`);
-      } else {
-        console.error('에피그램 등록 실패:', error);
-        alert('에피그램 등록 중 오류가 발생했습니다.');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 401) {
+          const errorData = error.response.data as ApiErrorResponse;
+          alert(`인증 오류: ${errorData.message || '로그인이 필요한 서비스입니다.'}`);
+        } else {
+          console.error('에피그램 등록 실패:', error);
+          alert('에피그램 등록 중 오류가 발생했습니다.');
+        }
       }
     }
-  };
+  }; // 👈 onSubmit 비동기 함수가 여기서 명확하게 끝납니다!
 
-  const onInvalid = async () => {
-    await trigger();
-  };
-
+  // 4. 🔥 PostForm 컴포넌트 고유의 화면 렌더링 영역
   return (
-    <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <TextArea
         label="내용"
         placeholder="500자 이내로 입력해주세요."
@@ -162,9 +163,9 @@ export function PostForm() {
         />
       </fieldset>
 
-      <fieldset>
+      <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
         <legend>태그</legend>
-        <div>
+        <div style={{ display: 'flex', gap: '5px', marginBottom: '5px' }}>
           {tags.map((tag, index) => (
             <button
               type="button"
