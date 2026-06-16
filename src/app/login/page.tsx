@@ -3,10 +3,10 @@
 import toast from 'react-hot-toast';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { LoginRequest } from '../apis/auth/type';
-import { loginUser } from '../apis/auth/auth';
-import { Input } from '../components/common/Input';
-import Button from '../components/common/Button';
+import { LoginRequest } from '../../apis/auth/type';
+import { loginUser } from '../../apis/auth/auth';
+import { Input } from '../../components/common/Input';
+import Button from '../../components/common/Button';
 import axios from 'axios';
 
 export default function LoginPage() {

@@ -1,15 +1,17 @@
 import React, { useState, KeyboardEvent } from 'react';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Input } from './Input';
 import { TextArea } from './TextArea';
+import { createEpigram } from '../../apis/epigram/epigram';
+import { CreateEpigramRequest, ApiErrorResponse } from '../../apis/epigram/type';
 
 interface EpigramFormData {
   content: string;
   authorType: '직접 입력' | '알 수 없음' | '본인';
-  authorName: string;
-  sourceTitle: string;
-  sourceUrl: string;
-  tags: string[];
+  author: string;
+  referenceTitle: string;
+  referenceUrl: string;
 }
 
 export function PostForm() {
@@ -17,14 +19,15 @@ export function PostForm() {
     register,
     handleSubmit,
     watch,
-    trigger,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<EpigramFormData>({
     mode: 'onBlur',
     defaultValues: {
       content: '',
       authorType: '직접 입력',
-      authorName: '',
+      author: '',
+      referenceTitle: '',
+      referenceUrl: '',
     },
   });
 
@@ -34,6 +37,7 @@ export function PostForm() {
 
   const currentAuthorType = watch('authorType');
 
+  // 1. 태그 입력 핸들러
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === '#' || e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -60,21 +64,40 @@ export function PostForm() {
     }
   };
 
+  // 2. 태그 삭제 핸들러
   const removeTag = (indexToRemove: number) => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
     setTagError('');
   };
 
-  // 저장 버튼 클릭 시 실행되는 함수
-  const onSubmit = (data: EpigramFormData) => {
-    const submissionData = {
-      ...data,
-      authorName: data.authorType === '직접 입력' ? data.authorName : data.authorType,
+  // 3. 비동기 데이터 제출 핸들러 (괄호 범위 정상화)
+  const onSubmit = async (data: EpigramFormData) => {
+    const submissionData: CreateEpigramRequest = {
+      content: data.content,
+      author: data.authorType === '직접 입력' ? data.author : data.authorType,
+      referenceTitle: data.referenceTitle || undefined,
+      referenceUrl: data.referenceUrl || undefined,
       tags,
     };
-    console.log('서버로 보낼 데이터:', submissionData);
-  };
 
+    try {
+      const result = await createEpigram(submissionData);
+      console.log('서버 응답 결과:', result);
+      alert('에피그램이 성공적으로 등록되었습니다!');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 401) {
+          const errorData = error.response.data as ApiErrorResponse;
+          alert(`인증 오류: ${errorData.message || '로그인이 필요한 서비스입니다.'}`);
+        } else {
+          console.error('에피그램 등록 실패:', error);
+          alert('에피그램 등록 중 오류가 발생했습니다.');
+        }
+      }
+    }
+  }; // 👈 onSubmit 비동기 함수가 여기서 명확하게 끝납니다!
+
+  // 4. 🔥 PostForm 컴포넌트 고유의 화면 렌더링 영역
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <TextArea
@@ -82,6 +105,7 @@ export function PostForm() {
         placeholder="500자 이내로 입력해주세요."
         error={errors.content?.message}
         {...register('content', {
+          required: '내용은 필수 항목입니다.',
           maxLength: {
             value: 500,
             message: '500자 이내로 입력해주세요.',
@@ -105,42 +129,43 @@ export function PostForm() {
           </label>
         </div>
       </div>
+
       {currentAuthorType === '직접 입력' && (
         <Input
           aria-label="직접 저자 입력"
           placeholder="저자 입력"
-          error={errors.authorName?.message}
-          {...register('authorName', {
+          error={errors.author?.message}
+          {...register('author', {
             required: currentAuthorType === '직접 입력' ? '저자를 입력해주세요.' : false,
           })}
         />
       )}
 
-      <fieldset>
+      <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
         <legend>출처</legend>
         <Input
           aria-label="출처 제목"
           placeholder="출처 제목 입력"
-          error={errors.sourceTitle?.message}
-          {...register('sourceTitle')}
+          error={errors.referenceTitle?.message}
+          {...register('referenceTitle')}
+        />
+        <Input
+          aria-label="출처 관련 URL"
+          type="url"
+          placeholder="URL (ex. https://www.website.com)"
+          error={errors.referenceUrl?.message}
+          {...register('referenceUrl', {
+            pattern: {
+              value: /^https?:\/\/.+/,
+              message: '올바른 URL 형식을 입력해 주세요.',
+            },
+          })}
         />
       </fieldset>
-      <Input
-        aria-label="출처 관련 URL"
-        type="url"
-        placeholder="URL (ex. https://www.website.com)"
-        error={errors.sourceUrl?.message}
-        {...register('sourceUrl', {
-          pattern: {
-            value: /^https?:\/\/.+/,
-            message: '올바른 URL 형식을 입력해 주세요.',
-          },
-        })}
-      />
 
-      <fieldset>
+      <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
         <legend>태그</legend>
-        <div>
+        <div style={{ display: 'flex', gap: '5px', marginBottom: '5px' }}>
           {tags.map((tag, index) => (
             <button
               type="button"
@@ -149,7 +174,7 @@ export function PostForm() {
               style={{ cursor: 'pointer' }}
               aria-label={`${tag} 태그 삭제`}
             >
-              #{tag}
+              #{tag} <span aria-hidden="true">&times;</span>
             </button>
           ))}
         </div>

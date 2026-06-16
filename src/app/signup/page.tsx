@@ -3,9 +3,9 @@
 import toast from 'react-hot-toast';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { SignUpRequest } from '../apis/auth/type';
-import { registerUser } from '../apis/auth/auth';
-import { Input } from '../components/common/Input';
+import { SignUpRequest } from '../../apis/auth/type';
+import { registerUser } from '../../apis/auth/auth';
+import { Input } from '../../components/common/Input';
 import axios from 'axios';
 
 interface SignUpFormInput extends SignUpRequest {
