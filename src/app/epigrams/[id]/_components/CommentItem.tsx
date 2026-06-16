@@ -1,17 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from '@/components/common/Modal';
 import Dropdown from '@/components/common/Dropdown';
 import { deleteCommentApi } from '@/apis/comment/comment';
 import { CommentItemType } from '@/apis/comment/type';
-
-import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
-import relativeTime from 'dayjs/plugin/relativeTime';
-
-dayjs.extend(relativeTime);
-dayjs.locale('ko');
+import { formatCommentDate } from '@/utils/date';
 
 interface CommentItemProps {
   comment: CommentItemType;
@@ -19,17 +13,6 @@ interface CommentItemProps {
   onStartEdit: (commentId: number, currentContent: string) => void;
   onDeleteSuccess: (commentId: number) => void;
 }
-
-const formatCommentDate = (dateString: string) => {
-  const now = dayjs();
-  const commentDate = dayjs(dateString);
-
-  if (now.diff(commentDate, 'hour') < 24) {
-    return commentDate.fromNow();
-  }
-
-  return commentDate.format('YYYY. MM. DD');
-};
 
 export default function CommentItem({
   comment,
@@ -40,7 +23,13 @@ export default function CommentItem({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
 
+  const [formattedDate, setFormattedDate] = useState<string>('');
+
   const isMyComment = currentUserId === comment.writer.id;
+
+  useEffect(() => {
+    setFormattedDate(formatCommentDate(comment.createdAt));
+  }, [comment.createdAt]);
 
   const handleDeleteConfirm = async () => {
     try {
@@ -90,7 +79,7 @@ export default function CommentItem({
 
       <div>
         <p>{comment.content}</p>
-        <span>{formatCommentDate(comment.createdAt)}</span>
+        <span>{formattedDate}</span>
       </div>
 
       {isMyComment && (
