@@ -1,8 +1,7 @@
-// components/common/Header/Header.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { getUserMeApi } from '@/app/apis/user/user';
 import { UserResponse } from '@/app/apis/user/type';
 import Logo from './Logo';
@@ -11,8 +10,14 @@ import UserProfile from './UserProfile';
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
+
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<UserResponse | null>(null);
+
+  const isLandingPage = pathname === '/';
+
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -33,6 +38,7 @@ export default function Header() {
 
     checkAuth();
   }, []);
+
   const handleLogout = async () => {
     try {
       alert('로그아웃 되었습니다.');
@@ -46,9 +52,11 @@ export default function Header() {
   };
 
   return (
-    <header>
-      <Logo isLoggedIn={isLoggedIn} />
+    <header className="mx-auto flex max-w-7xl items-center space-between px-6 py-4 border-b border-gray-100 bg-white">
+      <Logo isLoggedIn={isLoggedIn} isLanding={isLandingPage} />
+
       {isLoggedIn && <Navigation />}
+
       <div>
         {isLoggedIn && user ? (
           <UserProfile
@@ -56,9 +64,15 @@ export default function Header() {
             onLogout={handleLogout}
           />
         ) : (
-          <button type="button" onClick={() => router.push('/login')}>
-            로그인
-          </button>
+          !isAuthPage && (
+            <button
+              type="button"
+              onClick={() => router.push('/login')}
+              className="text-sm font-medium text-gray-600 hover:text-gray-950"
+            >
+              로그인
+            </button>
+          )
         )}
       </div>
     </header>

@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '@/components/common/Header/Header';
+import '@/styles/globals.css';
 
 export const metadata = {
   title: 'Epigrams',
@@ -14,8 +14,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="ko">
       <body>
-        <Header />
-
         <main>{children}</main>
       </body>
     </html>
