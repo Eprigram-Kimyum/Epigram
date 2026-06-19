@@ -10,50 +10,6 @@
     'Iropke Batang', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', Helvetica, Arial,
     sans-serif;
 
-  --text-main-3xl-bold: 32px 42px 700;
-  --text-main-3xl-semibold: 32px 42px 600;
-
-  --text-main-2xl-bold: 24px 32px 700;
-  --text-main-2xl-semibold: 24px 32px 600;
-  --text-main-2xl-medium: 24px 32px 500;
-  --text-main-2xl-regular: 24px 32px 400;
-
-  --text-main-xl-bold: 20px 32px 700;
-  --text-main-xl-semibold: 20px 32px 600;
-  --text-main-xl-medium: 20px 32px 500;
-  --text-main-xl-regular: 20px 32px 400;
-
-  --text-main-2lg-bold: 18px 26px 700;
-  --text-main-2lg-semibold: 18px 26px 600;
-  --text-main-2lg-medium: 18px 26px 500;
-  --text-main-2lg-regular: 18px 26px 400;
-
-  --text-main-lg-bold: 16px 26px 700;
-  --text-main-lg-semibold: 16px 26px 600;
-  --text-main-lg-medium: 16px 26px 500;
-  --text-main-lg-regular: 16px 26px 400;
-
-  --text-main-md-bold: 14px 24px 700;
-  --text-main-md-semibold: 14px 24px 600;
-  --text-main-md-medium: 14px 24px 500;
-  --text-main-md-regular: 14px 24px 400;
-
-  --text-main-sm-semibold: 13px 22px 600;
-  --text-main-sm-medium: 13px 22px 500;
-
-  --text-main-xs-semibold: 12px 20px 600;
-  --text-main-xs-medium: 12px 18px 500;
-  --text-main-xs-regular: 12px 18px 400;
-
-  --text-sub-4xl: 40px 52px;
-  --text-sub-3xl: 32px 48px;
-  --text-sub-2xl: 24px 40px;
-  --text-sub-xl: 20px 28px;
-  --text-sub-lg: 16px 26px;
-  --text-sub-md: 14px 26px;
-  --text-sub-sm: 13px 20px;
-  --text-sub-xs: 12px 18px;
-
   --color-black-100: #f9f9f9;
   --color-black-200: #6b6b6b;
   --color-black-300: #3e3e3e;
@@ -102,4 +58,180 @@
   --color-illustration-sub-gray1: #c7d1e0;
   --color-illustration-sub-gray2: #e3e9f1;
   --color-illustration-sub-gray3: #eff3f8;
+}
+
+@utility text-main-3xl-bold {
+  font-size: 32px;
+  line-height: 42px;
+  font-weight: 700;
+}
+@utility text-main-3xl-semibold {
+  font-size: 32px;
+  line-height: 42px;
+  font-weight: 600;
+}
+
+@utility text-main-2xl-bold {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+}
+@utility text-main-2xl-semibold {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+}
+@utility text-main-2xl-medium {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+}
+@utility text-main-2xl-regular {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+@utility text-main-xl-bold {
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 700;
+}
+@utility text-main-xl-semibold {
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 600;
+}
+@utility text-main-xl-medium {
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 500;
+}
+@utility text-main-xl-regular {
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+@utility text-main-2lg-bold {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+}
+@utility text-main-2lg-semibold {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+}
+@utility text-main-2lg-medium {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 500;
+}
+@utility text-main-2lg-regular {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 400;
+}
+
+@utility text-main-lg-bold {
+  font-size: 16px;
+  line-height: 26px;
+  font-weight: 700;
+}
+@utility text-main-lg-semibold {
+  font-size: 16px;
+  line-height: 26px;
+  font-weight: 600;
+}
+@utility text-main-lg-medium {
+  font-size: 16px;
+  line-height: 26px;
+  font-weight: 500;
+}
+@utility text-main-lg-regular {
+  font-size: 16px;
+  line-height: 26px;
+  font-weight: 400;
+}
+
+@utility text-main-md-bold {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 700;
+}
+@utility text-main-md-semibold {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 600;
+}
+@utility text-main-md-medium {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 500;
+}
+@utility text-main-md-regular {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+@utility text-main-sm-semibold {
+  font-size: 13px;
+  line-height: 22px;
+  font-weight: 600;
+}
+@utility text-main-sm-medium {
+  font-size: 13px;
+  line-height: 22px;
+  font-weight: 500;
+}
+
+@utility text-main-xs-semibold {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 600;
+}
+@utility text-main-xs-medium {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+}
+@utility text-main-xs-regular {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+}
+
+@utility text-sub-4xl {
+  font-size: 40px;
+  line-height: 52px;
+}
+@utility text-sub-3xl {
+  font-size: 32px;
+  line-height: 48px;
+}
+@utility text-sub-2xl {
+  font-size: 24px;
+  line-height: 40px;
+}
+@utility text-sub-xl {
+  font-size: 20px;
+  line-height: 28px;
+}
+@utility text-sub-lg {
+  font-size: 16px;
+  line-height: 26px;
+}
+@utility text-sub-md {
+  font-size: 14px;
+  line-height: 26px;
+}
+@utility text-sub-sm {
+  font-size: 13px;
+  line-height: 20px;
+}
+@utility text-sub-xs {
+  font-size: 12px;
+  line-height: 18px;
 }

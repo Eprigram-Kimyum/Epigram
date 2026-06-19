@@ -4,50 +4,66 @@ import { cn } from '@/utils/cn';
 
 export type ButtonVariant = 'main' | 'wide';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface BaseProps {
   variant?: ButtonVariant;
   isLoading?: boolean;
-  href?: string;
+  children: React.ReactNode;
+  className?: string;
 }
 
-export default function Button({
-  children,
-  type = 'button',
-  variant = 'main',
-  isLoading = false,
-  disabled,
-  className = '',
-  href,
-  ...props
-}: ButtonProps) {
-  const isButtonDisabled = disabled || isLoading;
+interface ButtonAsButtonProps
+  extends BaseProps, Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+  href?: never;
+}
+
+interface ButtonAsLinkProps
+  extends BaseProps, Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children' | 'href'> {
+  href: string;
+  disabled?: boolean;
+}
+
+export type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
+
+function isLinkProps(props: ButtonProps): props is ButtonAsLinkProps {
+  return 'href' in props;
+}
+
+export default function Button(props: ButtonProps) {
+  const { children, variant = 'main', isLoading = false, className = '' } = props;
+
+  const isButtonDisabled = ('disabled' in props && props.disabled) || isLoading;
 
   const baseStyle =
-    'inline-flex items-center justify-center font-main font-medium rounded-xl transition-colors duration-200';
+    'inline-flex items-center justify-center font-main text-main-xl-semibold h-[64px] px-4 gap-2 rounded-xl border';
 
   const variantStyles = {
-    main: 'px-6 py-3 text-sm min-w-[80px]',
-    wide: 'w-full py-4 text-base tracking-wide',
+    main: 'w-[286px]',
+    wide: 'w-full max-w-[640px]',
   };
 
   const colorStyles = isButtonDisabled
-    ? 'bg-illustration-sub-gray1 text-white cursor-not-allowed'
-    : 'bg-black-800 text-white hover:bg-black-700 active:bg-black-900';
+    ? 'bg-blue-400 border-blue-300 text-white cursor-not-allowed'
+    : 'bg-black-500 border-black-500 text-white hover:bg-black-600 hover:border-black-600 active:bg-black-700 active:border-black-700';
 
   const combinedClassName = cn(baseStyle, variantStyles[variant], colorStyles, className);
+  const content = isLoading ? '로딩 중...' : children;
 
-  if (href) {
+  if (isLinkProps(props)) {
+    const { href, disabled, ...linkProps } = props;
+
     return (
       <Link
         href={isButtonDisabled ? '#' : href}
         className={combinedClassName}
         aria-busy={isLoading}
-        {...(props as any)}
+        {...linkProps}
       >
-        {isLoading ? '로딩 중...' : children}
+        {content}
       </Link>
     );
   }
+
+  const { type = 'button', ...buttonProps } = props;
 
   return (
     <button
@@ -57,9 +73,9 @@ export default function Button({
       aria-live={isLoading ? 'polite' : 'off'}
       data-variant={variant}
       className={combinedClassName}
-      {...props}
+      {...buttonProps}
     >
-      {isLoading ? '로딩 중...' : children}
+      {content}
     </button>
   );
 }

@@ -6,7 +6,7 @@ import Link from 'next/link';
 export default function Navigation() {
   return (
     <nav>
-      <Link href="/epigrams" style={{ textDecoration: 'none', color: '#333' }}>
+      <Link href="/epigrams" className="text-main-lg-semibold text-black-600">
         피드
       </Link>
     </nav>

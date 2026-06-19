@@ -52,14 +52,13 @@ export default function Header() {
   };
 
   return (
-    <header className="grid grid-cols-3 items-center max-w-[1920px] max-h-20 border-b border-gray-100 pt-6.5 pr-30 pb-6.5 pl-30 bg-white">
-      <div className="flex justify-center">
+    <header className="flex justify-between items-center max-w-[1920px] max-h-20 border-b border-gray-100 py-6.5 px-30 bg-white">
+      <div className="flex items-center gap-8">
         <Logo isLoggedIn={isLoggedIn} isLanding={isLandingPage} />
+        {isLoggedIn && <Navigation />}
       </div>
 
-      <div className="flex justify-center">{isLoggedIn && <Navigation />}</div>
-
-      <div className="flex justify-end">
+      <div className="flex items-center">
         {isLoggedIn && user ? (
           <UserProfile
             user={{ nickname: user.nickname, profileImageUrl: user.image || '' }}

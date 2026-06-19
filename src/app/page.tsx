@@ -8,17 +8,19 @@ import { IMAGES } from '@/assets/images/images';
 
 export default function LandingPage() {
   return (
-    /* eslint-disable tailwindcss/no-custom-classname */
     <div className="w-full min-h-screen bg-white overflow-x-hidden font-main">
       <Header />
 
-      <main className="w-full mx-auto py-16">
-        <section className="flex flex-col max-h-[1040px] items-center justify-center text-center bg-white relative pt-20">
-          <div className="space-y-4 mb-8">
-            <h1 className="text-3xl md:text-4xl font-normal leading-relaxed text-black-900 font-sub">
-              나만 알고 있기엔 아까운 글이 있지 않나요?
+      <main className="w-full mx-auto">
+        <section className="relative flex h-[calc(100vh-80px)] w-full flex-col items-center justify-center bg-white text-center bg-[linear-gradient(to_bottom,transparent_97%,#F2f2F2_97%)] bg-size-[100%_3.33%]">
+          <div className="flex flex-col items-center space-y-4 mb-8 z-10">
+            <h1 className="text-sub-4xl leading-relaxed text-black-500 font-sub">
+              나만 알고 있기엔 <br className="hidden md:inline" />
+              아까운 글이 있지 않나요?
             </h1>
-            <p className="text-black-200 text-sm md:text-base">나만의 에피그램을 기록해 보세요.</p>
+            <p className="text-sub-xl text-black-300 font-sub ">
+              다른 사람들과 감정을 공유해 보세요.
+            </p>
           </div>
           <Button variant="main" href="/login">
             시작하기
@@ -26,14 +28,11 @@ export default function LandingPage() {
 
           <a
             href="#content"
-            className="absolute bottom-12 flex flex-col items-center space-y-2 group cursor-pointer no-underline scroll-smooth"
-            aria-label="본문 콘텐츠로 스크롤하여 더 알아보기"
+            className="absolute bottom-12 w-18.5 h-13.5 flex flex-col items-center space-y-1 group cursor-pointer no-underline z-10"
           >
-            <span className="text-blue-500 text-xs md:text-sm font-medium tracking-wide transition-colors group-hover:text-blue-600">
-              더 알아보기
-            </span>
-            <div className="text-blue-300 animate-bounce group-hover:text-blue-400">
-              <Icons name="chevron-up" className="w-4 h-4" />
+            <span className="text-blue-400 text-main-lg-semibold">더 알아보기</span>
+            <div className="text-blue-400 h-6 w-6">
+              <Icons name="chevron-up" />
             </div>
           </a>
         </section>
@@ -43,89 +42,94 @@ export default function LandingPage() {
           className="w-full bg-background py-32 relative scroll-mt-20"
           style={{
             backgroundImage: `
-              linear-gradient(135deg, white 25%, transparent 25%), 
-              linear-gradient(225deg, white 25%, transparent 25%),
-              linear-gradient(45deg, white 25%, transparent 25%), 
-              linear-gradient(315deg, white 25%, transparent 25%)
+              linear-gradient(160deg, white 45%, transparent 45%), 
+              linear-gradient(200deg, white 45%, transparent 45%),
+              linear-gradient(20deg, white 45%, transparent 45%), 
+              linear-gradient(340deg, white 45%, transparent 45%)
             `,
             backgroundPosition: 'top center, top center, bottom center, bottom center',
-            backgroundSize: '20px 20px',
+            backgroundSize: '60px 20px',
             backgroundRepeat: 'repeat-x',
           }}
         >
-          <div className="w-full max-w-[1188px] mx-auto px-4 space-y-40">
-            <section className="flex flex-col md:flex-row items-center justify-between w-full gap-12 mx-auto">
-              <div className="flex-shrink-0 overflow-hidden">
+          <div className="w-full max-w-max mx-auto px-4 space-y-95">
+            <section className="flex flex-col md:flex-row items-end justify-center gap-20 w-full">
+              <div className="w-full md:w-186 shrink-0 overflow-hidden">
                 <Image
                   src={IMAGES.CARD_MOCKUP.src}
                   alt={IMAGES.CARD_MOCKUP.alt}
                   width={744}
                   height={388}
-                  className="object-contain"
+                  className="object-contain w-full h-auto"
                   priority
                 />
               </div>
-              <div className="w-full md:w-[380px] space-y-4 text-left">
-                <h2 className="text-2xl font-bold text-black-900 leading-snug md:text-[28px]">
-                  명언이나 글귀, 토막 상식들을 공유해 보세요.
+              <div className="flex-1 text-left space-y-4 md:space-y-6">
+                <h2 className="text-main-3xl-bold text-black-950 leading-tight">
+                  명언이나 글귀, <br className="hidden md:block" />
+                  토막 상식들을 공유해 보세요.
                 </h2>
-                <p className="text-black-200 text-sm md:text-base leading-relaxed">
-                  나만 알던 소중한 글들을 다른 사람들에게 전파하세요
+                <p className="text-blue-600 text-main-2xl-medium leading-relaxed">
+                  나만 알던 소중한 글들을 <br className="hidden md:block" />
+                  다른 사람들에게 전파하세요
                 </p>
               </div>
             </section>
 
-            <section className="flex flex-col md:flex-row-reverse items-center justify-between w-full gap-12 mx-auto">
-              <div className="flex-shrink-0 overflow-hidden">
+            <section className="flex flex-col md:flex-row-reverse items-end justify-center w-full gap-20">
+              <div className="w-full md:w-186 shrink-0 overflow-hidden">
                 <Image
                   src={IMAGES.STATISTIC_LIST.src}
                   alt={IMAGES.STATISTIC_LIST.alt}
                   width={744}
                   height={388}
-                  className="object-contain"
+                  className="object-contain w-full h-auto"
                 />
               </div>
-              <div className="w-full md:w-[380px] space-y-4 text-left">
-                <h2 className="text-2xl font-bold text-black-900 leading-snug md:text-[28px]">
-                  감정 상태에 따라, 알맞은 위로를 받을 수 있어요.
+              <div className="flex-1 text-left space-y-4 md:space-y-6">
+                <h2 className="text-main-3xl-bold text-black-950 leading-tight">
+                  감정 상태에 따라, <br className="hidden md:block" />
+                  알맞은 위로를 받을 수 있어요.
                 </h2>
-                <p className="text-black-200 text-sm md:text-base leading-relaxed">
+                <p className="text-blue-600 text-main-2xl-medium leading-relaxed">
                   태그를 통해 글을 모아 볼 수 있어요
                 </p>
               </div>
             </section>
 
-            <section className="flex flex-col md:flex-row items-center justify-between w-full gap-12 mx-auto">
-              <div className="flex-shrink-0 overflow-hidden">
+            <section className="flex flex-col md:flex-row items-end justify-center gap-20 w-full">
+              <div className="w-full md:w-186 shrink-0 overflow-hidden">
                 <Image
                   src={IMAGES.STATISTICS_CHART.src}
                   alt={IMAGES.STATISTICS_CHART.alt}
                   width={744}
                   height={388}
-                  className="object-contain"
+                  className="object-contain w-full h-auto"
                 />
               </div>
-              <div className="w-full md:w-[380px] space-y-4 text-left">
-                <h2 className="text-2xl font-bold text-black-900 leading-snug md:text-[28px]">
-                  내가 요즘 어떤 감정 상태인지 통계로 한눈에 볼 수 있어요.
+              <div className="flex-1 text-left space-y-4 md:space-y-6">
+                <h2 className="text-main-3xl-bold text-black-950 leading-tight">
+                  내가 요즘 어떤 감정 상태인지 <br className="hidden md:block" />
+                  통계로 한눈에 볼 수 있어요.
                 </h2>
-                <p className="text-black-200 text-sm md:text-base leading-relaxed">
-                  감정 달력으로 내 마음에 담긴 감정을 확인해보세요
+                <p className="text-blue-600 text-main-2xl-medium leading-relaxed">
+                  감정 달력으로 <br className="hidden md:block" />내 마음에 담긴 감정을 확인해보세요
                 </p>
               </div>
             </section>
 
             <section className="w-full text-center space-y-12 pt-12 pb-12">
               <h2 className="text-2xl font-bold md:text-[28px] text-black-900">
-                사용자들이 직접 인용한 에피그램들
+                사용자들이 직접 <br className="hidden md:block" />
+                인용한 에피그램들
               </h2>
-              <div className="w-full max-w-[640px] mx-auto flex justify-center overflow-hidden">
+              <div className="w-full max-w-160 mx-auto flex justify-center overflow-hidden">
                 <Image
                   src={IMAGES.EXAMPLES.src}
                   alt="사용자들이 작성한 에피그램 카드 목록 이미지"
                   width={640}
                   height={960}
-                  className="w-full h-auto object-contain"
+                  className="object-contain w-full h-auto"
                 />
               </div>
             </section>
@@ -133,9 +137,24 @@ export default function LandingPage() {
         </div>
       </main>
 
-      <footer className="w-full max-w-[1920px] mx-auto py-24 text-center flex flex-col items-center justify-center space-y-8 bg-white">
+      <footer
+        className="w-full h-screen mx-auto text-center flex flex-col items-center justify-center space-y-8 bg-white"
+        style={{
+          backgroundImage: `
+            linear-gradient(160deg, transparent 45%), 
+            linear-gradient(200deg, transparent 45%),
+            linear-gradient(20deg, transparent 45%), 
+            linear-gradient(340deg, transparent 45%),
+            
+            linear-gradient(to bottom, transparent 97%, #F2F2F2 97%) 
+    `,
+          backgroundPosition: 'top center, top center, bottom center, bottom center, to bottom',
+          backgroundSize: '60px 20px, 60px 20px, 60px 20px, 60px 20px, 100% 3.33%',
+          backgroundRepeat: 'repeat-x, repeat-x, repeat-x, repeat-x, repeat',
+        }}
+      >
         <div className="flex justify-center" aria-label="날마다 에피그램">
-          <Icons name="slogon" className="w-[184px] h-[105px]" />
+          <Icons name="slogon" className="w-46 h-26.25" />
         </div>
         <Button variant="main" href="/login">
           에피그램 시작하기
