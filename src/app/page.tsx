@@ -1,4 +1,3 @@
-// src/app/page.tsx
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,25 +9,24 @@ import { IMAGES } from '@/assets/images/images';
 export default function LandingPage() {
   return (
     /* eslint-disable tailwindcss/no-custom-classname */
-    <div className="w-full min-h-screen bg-white overflow-x-hidden font-main scroll-smooth">
+    <div className="w-full min-h-screen bg-white overflow-x-hidden font-main">
       <Header />
 
-      <main className="w-full max-w-[1920px] mx-auto py-16">
-        <section className="flex flex-col items-center justify-center text-center bg-white min-h-[85vh] relative pt-20 pb-32">
+      <main className="w-full mx-auto py-16">
+        <section className="flex flex-col max-h-[1040px] items-center justify-center text-center bg-white relative pt-20">
           <div className="space-y-4 mb-8">
             <h1 className="text-3xl md:text-4xl font-normal leading-relaxed text-black-900 font-sub">
               나만 알고 있기엔 아까운 글이 있지 않나요?
             </h1>
             <p className="text-black-200 text-sm md:text-base">나만의 에피그램을 기록해 보세요.</p>
           </div>
-
-          <Link href="/login" passHref>
-            <Button variant="main">시작하기</Button>
-          </Link>
+          <Button variant="main" href="/login">
+            시작하기
+          </Button>
 
           <a
             href="#content"
-            className="absolute bottom-12 flex flex-col items-center space-y-2 group cursor-pointer no-underline"
+            className="absolute bottom-12 flex flex-col items-center space-y-2 group cursor-pointer no-underline scroll-smooth"
             aria-label="본문 콘텐츠로 스크롤하여 더 알아보기"
           >
             <span className="text-blue-500 text-xs md:text-sm font-medium tracking-wide transition-colors group-hover:text-blue-600">
@@ -139,9 +137,9 @@ export default function LandingPage() {
         <div className="flex justify-center" aria-label="날마다 에피그램">
           <Icons name="slogon" className="w-[184px] h-[105px]" />
         </div>
-        <Link href="/login" passHref>
-          <Button variant="main">에피그램 시작하기</Button>
-        </Link>
+        <Button variant="main" href="/login">
+          에피그램 시작하기
+        </Button>
       </footer>
     </div>
   );

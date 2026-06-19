@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
 import { Icons } from '../Icons';
+import Link from 'next/link';
 
 interface LogoProps {
   isLoggedIn: boolean;
@@ -10,25 +10,15 @@ interface LogoProps {
 }
 
 export default function Logo({ isLoggedIn, isLanding = false }: LogoProps) {
-  const router = useRouter();
-
-  const handleLogoClick = () => {
-    router.push('/');
-  };
+  const href = '/';
 
   return (
-    <div
-      onClick={handleLogoClick}
-      role="button"
-      tabIndex={0}
-      className="flex cursor-pointer items-center focus-visible:outline-none"
-      onKeyDown={(e) => e.key === 'Enter' && handleLogoClick()}
-    >
+    <Link href={href} className="flex items-center focus-visible:outline-none">
       {isLanding ? (
-        <Icons name="logo" className="h-9 w-32.75" />
+        <Icons name="logo" className="h-9 w-32.75" aria-label="Epigrams 홈" />
       ) : (
-        <Icons name="symbol" className="h-9 w-32.75" />
+        <Icons name="symbol" className="h-9 w-32.75" aria-label="Epigrams 홈" />
       )}
-    </div>
+    </Link>
   );
 }

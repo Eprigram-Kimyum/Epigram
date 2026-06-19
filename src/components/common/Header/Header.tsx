@@ -52,12 +52,14 @@ export default function Header() {
   };
 
   return (
-    <header className="mx-auto flex max-w-7xl items-center space-between px-6 py-4 border-b border-gray-100 bg-white">
-      <Logo isLoggedIn={isLoggedIn} isLanding={isLandingPage} />
+    <header className="grid grid-cols-3 items-center max-w-[1920px] max-h-20 border-b border-gray-100 pt-6.5 pr-30 pb-6.5 pl-30 bg-white">
+      <div className="flex justify-center">
+        <Logo isLoggedIn={isLoggedIn} isLanding={isLandingPage} />
+      </div>
 
-      {isLoggedIn && <Navigation />}
+      <div className="flex justify-center">{isLoggedIn && <Navigation />}</div>
 
-      <div>
+      <div className="flex justify-end">
         {isLoggedIn && user ? (
           <UserProfile
             user={{ nickname: user.nickname, profileImageUrl: user.image || '' }}
@@ -68,7 +70,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => router.push('/login')}
-              className="text-sm font-medium text-gray-600 hover:text-gray-950"
+              className="text-main-md-medium"
             >
               로그인
             </button>
