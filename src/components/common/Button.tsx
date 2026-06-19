@@ -51,10 +51,14 @@ export default function Button(props: ButtonProps) {
   if (isLinkProps(props)) {
     const { href, disabled, ...linkProps } = props;
 
+    const isLinkDisabled = isButtonDisabled;
+
     return (
       <Link
-        href={isButtonDisabled ? '#' : href}
-        className={combinedClassName}
+        href={isLinkDisabled ? '#' : href}
+        className={cn(combinedClassName, isLinkDisabled && 'pointer-events-none opacity-50')}
+        aria-disabled={isLinkDisabled}
+        tabIndex={isLinkDisabled ? -1 : undefined}
         aria-busy={isLoading}
         {...linkProps}
       >

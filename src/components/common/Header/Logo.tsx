@@ -15,7 +15,8 @@ export default function Logo({ isLanding = false }: LogoProps) {
   return (
     <Link
       href={href}
-      className="flex items-center focus-visible:outline-none aria-label=Epigrams 홈"
+      className="flex items-center focus-visible:outline-none"
+      aria-label="Epigrams 홈"
     >
       {isLanding ? (
         <Icons name="logo" className="h-9 w-32.75" />
