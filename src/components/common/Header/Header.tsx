@@ -1,8 +1,7 @@
-// components/common/Header/Header.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { getUserMeApi } from '@/app/apis/user/user';
 import { UserResponse } from '@/app/apis/user/type';
 import Logo from './Logo';
@@ -11,8 +10,14 @@ import UserProfile from './UserProfile';
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
+
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<UserResponse | null>(null);
+
+  const isLandingPage = pathname === '/';
+
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -33,6 +38,7 @@ export default function Header() {
 
     checkAuth();
   }, []);
+
   const handleLogout = async () => {
     try {
       alert('로그아웃 되었습니다.');
@@ -46,19 +52,28 @@ export default function Header() {
   };
 
   return (
-    <header>
-      <Logo isLoggedIn={isLoggedIn} />
-      {isLoggedIn && <Navigation />}
-      <div>
+    <header className="flex justify-between items-center max-w-[1920px] max-h-20 border-b border-gray-100 py-6.5 px-30 bg-white">
+      <div className="flex items-center gap-8">
+        <Logo isLoggedIn={isLoggedIn} isLanding={isLandingPage} />
+        {isLoggedIn && <Navigation />}
+      </div>
+
+      <div className="flex items-center">
         {isLoggedIn && user ? (
           <UserProfile
             user={{ nickname: user.nickname, profileImageUrl: user.image || '' }}
             onLogout={handleLogout}
           />
         ) : (
-          <button type="button" onClick={() => router.push('/login')}>
-            로그인
-          </button>
+          !isAuthPage && (
+            <button
+              type="button"
+              onClick={() => router.push('/login')}
+              className="text-main-md-medium"
+            >
+              로그인
+            </button>
+          )
         )}
       </div>
     </header>

@@ -7,7 +7,7 @@
     'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', Arial,
     sans-serif;
   --font-sub:
-    'Iropke Batang OTF', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', Helvetica, Arial,
+    'Iropke Batang', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', Helvetica, Arial,
     sans-serif;
 
   --color-black-100: #f9f9f9;
@@ -58,4 +58,180 @@
   --color-illustration-sub-gray1: #c7d1e0;
   --color-illustration-sub-gray2: #e3e9f1;
   --color-illustration-sub-gray3: #eff3f8;
+}
+
+@utility text-main-3xl-bold {
+  font-size: 32px;
+  line-height: 42px;
+  font-weight: 700;
+}
+@utility text-main-3xl-semibold {
+  font-size: 32px;
+  line-height: 42px;
+  font-weight: 600;
+}
+
+@utility text-main-2xl-bold {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+}
+@utility text-main-2xl-semibold {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+}
+@utility text-main-2xl-medium {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+}
+@utility text-main-2xl-regular {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+@utility text-main-xl-bold {
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 700;
+}
+@utility text-main-xl-semibold {
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 600;
+}
+@utility text-main-xl-medium {
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 500;
+}
+@utility text-main-xl-regular {
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+@utility text-main-2lg-bold {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+}
+@utility text-main-2lg-semibold {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+}
+@utility text-main-2lg-medium {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 500;
+}
+@utility text-main-2lg-regular {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 400;
+}
+
+@utility text-main-lg-bold {
+  font-size: 16px;
+  line-height: 26px;
+  font-weight: 700;
+}
+@utility text-main-lg-semibold {
+  font-size: 16px;
+  line-height: 26px;
+  font-weight: 600;
+}
+@utility text-main-lg-medium {
+  font-size: 16px;
+  line-height: 26px;
+  font-weight: 500;
+}
+@utility text-main-lg-regular {
+  font-size: 16px;
+  line-height: 26px;
+  font-weight: 400;
+}
+
+@utility text-main-md-bold {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 700;
+}
+@utility text-main-md-semibold {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 600;
+}
+@utility text-main-md-medium {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 500;
+}
+@utility text-main-md-regular {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+@utility text-main-sm-semibold {
+  font-size: 13px;
+  line-height: 22px;
+  font-weight: 600;
+}
+@utility text-main-sm-medium {
+  font-size: 13px;
+  line-height: 22px;
+  font-weight: 500;
+}
+
+@utility text-main-xs-semibold {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 600;
+}
+@utility text-main-xs-medium {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+}
+@utility text-main-xs-regular {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+}
+
+@utility text-sub-4xl {
+  font-size: 40px;
+  line-height: 52px;
+}
+@utility text-sub-3xl {
+  font-size: 32px;
+  line-height: 48px;
+}
+@utility text-sub-2xl {
+  font-size: 24px;
+  line-height: 40px;
+}
+@utility text-sub-xl {
+  font-size: 20px;
+  line-height: 28px;
+}
+@utility text-sub-lg {
+  font-size: 16px;
+  line-height: 26px;
+}
+@utility text-sub-md {
+  font-size: 14px;
+  line-height: 26px;
+}
+@utility text-sub-sm {
+  font-size: 13px;
+  line-height: 20px;
+}
+@utility text-sub-xs {
+  font-size: 12px;
+  line-height: 18px;
 }

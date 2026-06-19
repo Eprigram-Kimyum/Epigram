@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '@/components/common/Header/Header';
+import '@/styles/globals.css';
 
 export const metadata = {
   title: 'Epigrams',
@@ -12,10 +12,8 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="ko">
+    <html lang="ko" className="scroll-smooth">
       <body>
-        <Header />
-
         <main>{children}</main>
       </body>
     </html>
