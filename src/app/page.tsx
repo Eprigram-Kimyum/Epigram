@@ -9,8 +9,6 @@ import { IMAGES } from '@/assets/images/images';
 export default function LandingPage() {
   return (
     <div className="w-full min-h-screen bg-white overflow-x-hidden font-main">
-      <Header />
-
       <main className="w-full mx-auto">
         <section className="relative flex h-[calc(100vh-80px)] w-full flex-col items-center justify-center bg-white text-center bg-[linear-gradient(to_bottom,transparent_97%,#F2f2F2_97%)] bg-size-[100%_3.33%]">
           <div className="flex flex-col items-center space-y-4 mb-8 z-10">
@@ -39,14 +37,14 @@ export default function LandingPage() {
 
         <div
           id="content"
-          className="w-full bg-background py-32 relative scroll-mt-20"
+          className="w-full bg-background py-52.5 relative scroll-mt-20"
           style={{
             backgroundImage: `
               linear-gradient(160deg, white 45%, transparent 45%), 
               linear-gradient(200deg, white 45%, transparent 45%),
               linear-gradient(20deg, white 45%, transparent 45%), 
               linear-gradient(340deg, white 45%, transparent 45%)
-            `,
+      `,
             backgroundPosition: 'top center, top center, bottom center, bottom center',
             backgroundSize: '60px 20px',
             backgroundRepeat: 'repeat-x',
@@ -117,9 +115,11 @@ export default function LandingPage() {
                 </p>
               </div>
             </section>
+          </div>
 
-            <section className="w-full text-center space-y-12 pt-12 pb-12">
-              <h2 className="text-2xl font-bold md:text-[28px] text-black-900">
+          <div className="w-full max-w-max mx-auto px-4 mt-67.5">
+            <section className="flex flex-col w-full text-center">
+              <h2 className="text-main-3xl-bold text-black-950 mb-25">
                 사용자들이 직접 <br className="hidden md:block" />
                 인용한 에피그램들
               </h2>
@@ -157,7 +157,7 @@ export default function LandingPage() {
           <Icons name="slogon" className="w-46 h-26.25" />
         </div>
         <Button variant="main" href="/login">
-          에피그램 시작하기
+          시작하기
         </Button>
       </footer>
     </div>
