@@ -1,19 +1,23 @@
 'use client';
 
 import React from 'react';
+import { Icons } from '../Icons';
 import Link from 'next/link';
 
 interface LogoProps {
-  isLoggedIn: boolean;
+  href?: string;
+  isLoggedIn?: boolean;
+  isLanding?: boolean;
 }
 
-export default function Logo({ isLoggedIn }: LogoProps) {
+export function Logo({ href = '/' }: LogoProps) {
   return (
     <Link
-      href={isLoggedIn ? '/epigrams' : '/'}
-      style={{ fontWeight: 'bold', fontSize: '20px', textDecoration: 'none', color: '#000' }}
+      href={href}
+      className="flex items-center focus-visible:outline-none"
+      aria-label="Epigrams 홈"
     >
-      Epigrams
+      <Icons name="logo" className="h-9 w-32.75" />
     </Link>
   );
 }
