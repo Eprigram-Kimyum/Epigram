@@ -40,8 +40,6 @@
 
   --color-background: #f5f7fa;
 
-  --color-state: #ff6577;
-
   --color-line-white: #f2f2f2;
   --color-line-blue: #cfdbea;
 
@@ -58,6 +56,8 @@
   --color-illustration-sub-gray1: #c7d1e0;
   --color-illustration-sub-gray2: #e3e9f1;
   --color-illustration-sub-gray3: #eff3f8;
+
+  --color-state-error: #ff6577;
 }
 
 @utility text-main-3xl-bold {

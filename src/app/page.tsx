@@ -1,7 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
-import Header from '@/components/common/Header/Header';
 import Button from '@/components/common/Button';
 import { Icons } from '@/components/common/Icons';
 import { IMAGES } from '@/assets/images/images';
@@ -29,7 +27,7 @@ export default function LandingPage() {
             className="absolute bottom-12 w-18.5 h-13.5 flex flex-col items-center space-y-1 group cursor-pointer no-underline z-10"
           >
             <span className="text-blue-400 text-main-lg-semibold">더 알아보기</span>
-            <div className="text-blue-400 h-6 w-6">
+            <div className="text-blue-400 h-6 w-6 animate-bounce">
               <Icons name="chevron-up" />
             </div>
           </a>
@@ -84,7 +82,7 @@ export default function LandingPage() {
                   className="object-contain w-full h-auto"
                 />
               </div>
-              <div className="flex-1 text-left space-y-4 md:space-y-6">
+              <div className="flex-1 text-right space-y-4 md:space-y-6">
                 <h2 className="text-main-3xl-bold text-black-950 leading-tight">
                   감정 상태에 따라, <br className="hidden md:block" />
                   알맞은 위로를 받을 수 있어요.
