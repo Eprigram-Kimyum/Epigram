@@ -22,7 +22,7 @@ export default function LoginPage() {
     setError,
     formState: { errors, isSubmitting, isValid },
   } = useForm<LoginRequest>({
-    mode: 'onChange',
+    mode: 'onTouched',
   });
 
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
@@ -76,6 +76,7 @@ export default function LoginPage() {
               id="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="비밀번호"
+              aria-invalid={!!errors.password}
               error={errors.password?.message}
               className="bg-blue-200 border-none"
               suffix={

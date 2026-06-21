@@ -1,4 +1,5 @@
 import React, { ComponentProps, useId } from 'react';
+import { cn } from '@/utils/cn';
 
 interface InputProps extends ComponentProps<'input'> {
   label?: string;
@@ -35,9 +36,11 @@ export function Input({
           type={type}
           aria-invalid={!!error}
           aria-describedby={error ? errorId : undefined}
-          className={`text-black-950 text-main-xl-regular px-4 w-full h-16 bg-background rounded-xl focus:outline-none focus:border-blue-500 placeholder:text-blue-400 ${
-            suffix ? 'pr-12' : ''
-          } ${className || ''}`}
+          className={cn(
+            'text-black-950 text-main-xl-regular px-4 w-full h-16 bg-background rounded-xl focus:outline-none focus:border-blue-500 placeholder:text-blue-400',
+            suffix && 'pr-12',
+            className,
+          )}
           {...props}
         />
 
