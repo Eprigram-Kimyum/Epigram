@@ -1,7 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
-import Header from '@/components/common/Header/Header';
 import Button from '@/components/common/Button';
 import { Icons } from '@/components/common/Icons';
 import { IMAGES } from '@/assets/images/images';
@@ -9,8 +7,6 @@ import { IMAGES } from '@/assets/images/images';
 export default function LandingPage() {
   return (
     <div className="w-full min-h-screen bg-white overflow-x-hidden font-main">
-      <Header />
-
       <main className="w-full mx-auto">
         <section className="relative flex h-[calc(100vh-80px)] w-full flex-col items-center justify-center bg-white text-center bg-[linear-gradient(to_bottom,transparent_97%,#F2f2F2_97%)] bg-size-[100%_3.33%]">
           <div className="flex flex-col items-center space-y-4 mb-8 z-10">
@@ -31,7 +27,7 @@ export default function LandingPage() {
             className="absolute bottom-12 w-18.5 h-13.5 flex flex-col items-center space-y-1 group cursor-pointer no-underline z-10"
           >
             <span className="text-blue-400 text-main-lg-semibold">더 알아보기</span>
-            <div className="text-blue-400 h-6 w-6">
+            <div className="text-blue-400 h-6 w-6 animate-bounce">
               <Icons name="chevron-up" />
             </div>
           </a>
@@ -39,14 +35,14 @@ export default function LandingPage() {
 
         <div
           id="content"
-          className="w-full bg-background py-32 relative scroll-mt-20"
+          className="w-full bg-background py-52.5 relative scroll-mt-20"
           style={{
             backgroundImage: `
               linear-gradient(160deg, white 45%, transparent 45%), 
               linear-gradient(200deg, white 45%, transparent 45%),
               linear-gradient(20deg, white 45%, transparent 45%), 
               linear-gradient(340deg, white 45%, transparent 45%)
-            `,
+      `,
             backgroundPosition: 'top center, top center, bottom center, bottom center',
             backgroundSize: '60px 20px',
             backgroundRepeat: 'repeat-x',
@@ -86,7 +82,7 @@ export default function LandingPage() {
                   className="object-contain w-full h-auto"
                 />
               </div>
-              <div className="flex-1 text-left space-y-4 md:space-y-6">
+              <div className="flex-1 text-right space-y-4 md:space-y-6">
                 <h2 className="text-main-3xl-bold text-black-950 leading-tight">
                   감정 상태에 따라, <br className="hidden md:block" />
                   알맞은 위로를 받을 수 있어요.
@@ -117,9 +113,11 @@ export default function LandingPage() {
                 </p>
               </div>
             </section>
+          </div>
 
-            <section className="w-full text-center space-y-12 pt-12 pb-12">
-              <h2 className="text-2xl font-bold md:text-[28px] text-black-900">
+          <div className="w-full max-w-max mx-auto px-4 mt-67.5">
+            <section className="flex flex-col w-full text-center">
+              <h2 className="text-main-3xl-bold text-black-950 mb-25">
                 사용자들이 직접 <br className="hidden md:block" />
                 인용한 에피그램들
               </h2>
@@ -157,7 +155,7 @@ export default function LandingPage() {
           <Icons name="slogon" className="w-46 h-26.25" />
         </div>
         <Button variant="main" href="/login">
-          에피그램 시작하기
+          시작하기
         </Button>
       </footer>
     </div>

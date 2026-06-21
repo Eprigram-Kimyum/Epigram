@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { getUserMeApi } from '@/app/apis/user/user';
 import { UserResponse } from '@/app/apis/user/type';
-import Logo from './Logo';
+import { Logo } from './Logo';
 import Navigation from './Navigation';
 import UserProfile from './UserProfile';
 
@@ -52,7 +52,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex justify-between items-center max-w-[1920px] max-h-20 border-b border-gray-100 py-6.5 px-30 bg-white">
+    <header className="flex justify-between items-center max-w-screen max-h-20 border-b border-gray-100 py-6.5 px-30 bg-white">
       <div className="flex items-center gap-8">
         <Logo isLoggedIn={isLoggedIn} isLanding={isLandingPage} />
         {isLoggedIn && <Navigation />}
